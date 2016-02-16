@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="lazyLoadingEnabled" value="false"/>
+        <setting name="logImpl" value="SLF4J"/>
+    </settings>
+
+
+    <typeAliases>
+        <typeAlias alias="Config" type="com.hussard.web.base.bbs.domain.Config"/>
+        <typeAlias alias="Content" type="com.hussard.web.base.bbs.domain.Content"/>
+        <typeAlias alias="Reply" type="com.hussard.web.base.bbs.domain.Reply"/>
+        <typeAlias alias="BbsFile" type="com.hussard.web.base.bbs.domain.BbsFile"/>
+    </typeAliases>
+    
+</configuration>

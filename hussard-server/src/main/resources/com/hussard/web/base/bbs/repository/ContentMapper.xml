@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hussard.web.base.bbs.repository.ContentMapper">
+
+    <select id="findListBySearchMode" parameterType="map" resultType="Content">
+        SELECT C.CONTENT_ID AS contentId,
+        C.BBS_ID AS bbsId,
+        C.CONTENT_SUBJECT AS contentSubject,
+        C.CONTENT_DETAILS AS contentDetails,
+        C.CONTENT_VIEW_CNT AS contentViewCnt,
+        C.REGI_IPADDRESS AS regiIpAddress,
+        C.CONTENT_TYPE AS contentType,
+        C.CONTENT_STA_DTIME AS contentStaDtime,
+        C.CONTENT_END_DTIME AS contentEndDtime,
+        C.CONTENT_POPUP_YN AS contentPopupYn,
+        C.CONTENT_POPUP_STA_DTIME AS contentPopupStaDtime,
+        C.CONTENT_POPUP_END_DTIME AS contentPopupEndDtime,
+        C.USE_YN AS useYn,
+        C.REGI_ID AS regiId,
+        C.REGI_DTIME AS regiDtime,
+        C.MODI_ID AS modiId,
+        C.MODI_DTIME AS modiDtime,
+        D.REPLY_CNT AS replyCnt,
+        E.FILE_CNT AS fileCnt FROM
+        (SELECT A.* FROM
+        (SELECT *FROM
+        BBS_CONTENT
+        WHERE (CONTENT_TYPE = 1 OR CONTENT_TYPE = 2)
+        ORDER BY CONTENT_ID DESC
+        ) A
+        UNION ALL
+        SELECT B.* FROM
+        (SELECT *
+        FROM BBS_CONTENT
+        WHERE CONTENT_TYPE = 0
+        ORDER BY CONTENT_ID DESC) B) C
+        LEFT OUTER JOIN
+        (SELECT CONTENT_ID, COUNT(REPLY_ID) AS REPLY_CNT FROM BBS_REPLY
+        WHERE USE_YN = 'Y'
+        GROUP BY CONTENT_ID) D
+        ON C.CONTENT_ID = D.CONTENT_ID
+        LEFT OUTER JOIN
+        (SELECT CONTENT_ID, COUNT(FILE_ID) AS FILE_CNT FROM BBS_FILE
+        WHERE USE_YN = 'Y'
+        GROUP BY CONTENT_ID) E
+        ON C.CONTENT_ID = E.CONTENT_ID
+        WHERE USE_YN = 'Y'
+        AND BBS_ID = #{bbsId}
+        AND CASE WHEN isnull(C.CONTENT_STA_DTIME) THEN TRUE ELSE C.CONTENT_STA_DTIME &lt;= now() END
+        AND CASE WHEN isnull(C.CONTENT_END_DTIME) THEN TRUE ELSE C.CONTENT_END_DTIME &gt;= now() END
+        <if test="searchMode == 1">AND CONTENT_SUBJECT LIKE CONCAT('%', #{searchContent}, '%') /* 제목만 검색 */</if>
+        <if test="searchMode == 2">AND CONTENT_DETAILS LIKE CONCAT('%', #{searchContent}, '%')  /* 내용만 검색 */</if>
+        <if test="searchMode == 3">AND (CONTENT_SUBJECT LIKE CONCAT('%', #{searchContent}, '%')  OR CONTENT_DETAILS LIKE CONCAT('%', #{searchContent}, '%')) /* 내용+제목만 검색 */</if>
+        LIMIT #{fromLimit}, #{perPage};
+    </select>
+
+    <select id="findCountByBbsId" parameterType="map" resultType="int">
+        SELECT COUNT(CONTENT_ID) AS contentCnt
+        FROM BBS_CONTENT
+        WHERE USE_YN = 'Y'
+        AND BBS_ID = #{bbsId}
+        <if test="searchMode == 1">AND CONTENT_SUBJECT LIKE CONCAT('%', #{searchContent}, '%') /* 제목만 검색 */</if>
+        <if test="searchMode == 2">AND CONTENT_DETAILS LIKE CONCAT('%', #{searchContent}, '%')  /* 내용만 검색 */</if>
+        <if test="searchMode == 3">AND (CONTENT_SUBJECT LIKE CONCAT('%', #{searchContent}, '%')  OR CONTENT_DETAILS LIKE CONCAT('%', #{searchContent}, '%')) /* 내용+제목만 검색 */</if>
+    </select>
+
+    <insert id="saveContent" parameterType="Content" useGeneratedKeys="true" keyColumn="CONTENT_ID" keyProperty="contentId">
+
+        INSERT INTO BBS_CONTENT (BBS_ID, CONTENT_SUBJECT, CONTENT_DETAILS, CONTENT_TYPE, REGI_IPADDRESS, REGI_ID, REGI_DTIME
+        <if test="contentStaDtime != ''">, CONTENT_STA_DTIME</if>
+        <if test="contentEndDtime != ''">, CONTENT_END_DTIME</if>
+        <if test="contentPopupYn != ''">, CONTENT_POPUP_YN</if>
+        <if test="contentPopupStaDtime != ''">, CONTENT_POPUP_STA_DTIME</if>
+        <if test="contentPopupEndDtime != ''">, CONTENT_POPUP_END_DTIME</if>
+        )
+        VALUES (
+          #{bbsId},
+          #{contentSubject},
+          #{contentDetails},
+          #{contentType},
+          #{regiIpAddress},
+          #{regiId},
+          now()
+          <if test="contentStaDtime != ''">, #{contentStaDtime}</if>
+          <if test="contentEndDtime != ''">, #{contentEndDtime}</if>
+          <if test="contentPopupYn != ''">, #{contentPopupYn}</if>
+          <if test="contentPopupStaDtime != ''">, #{contentPopupStaDtime}</if>
+          <if test="contentPopupEndDtime != ''">, #{contentPopupEndDtime}</if>
+        )
+    </insert>
+
+
+    <select id="findContentByContentId" parameterType="int" resultType="Content">
+        <![CDATA[
+        SELECT
+            CONTENT_ID AS contentId,
+            BBS_ID AS bbsId,
+            CONTENT_SUBJECT AS contentSubject,
+            CONTENT_DETAILS AS contentDetails,
+            CONTENT_VIEW_CNT AS contentViewCnt,
+            REGI_IPADDRESS AS regiIpAddress,
+            CONTENT_TYPE AS contentType,
+            CONTENT_STA_DTIME AS contentStaDtime,
+            CONTENT_END_DTIME AS COntentEndDtime,
+            CONTENT_POPUP_YN AS contentPopupYn,
+            CONTENT_POPUP_STA_DTIME AS contentPopupStaDtime,
+            CONTENT_POPUP_END_DTIME AS contentPopupEndDtime,
+            USE_YN AS useYn,
+            REGI_ID AS regiId,
+            REGI_DTIME AS regiDtime,
+            MODI_ID AS modiId,
+            MODI_DTIME AS modiDtime
+            FROM BBS_CONTENT
+            WHERE USE_YN = 'Y'
+            AND CONTENT_ID = #{contentId};
+        ]]>
+    </select>
+
+    <select id="getBbsNoticeThumnailList" parameterType="int" resultType="Content">
+            SELECT C.CONTENT_ID AS contentId,
+            C.BBS_ID AS bbsId,
+            C.CONTENT_SUBJECT AS contentSubject,
+            C.CONTENT_DETAILS AS contentDetails,
+            C.CONTENT_VIEW_CNT AS contentViewCnt,
+            C.REGI_IPADDRESS AS regiIpAddress,
+            C.CONTENT_TYPE AS contentType,
+            C.CONTENT_STA_DTIME AS contentStaDtime,
+            C.CONTENT_END_DTIME AS contentEndDtime,
+            C.CONTENT_POPUP_YN AS contentPopupYn,
+            C.CONTENT_POPUP_STA_DTIME AS contentPopupStaDtime,
+            C.CONTENT_POPUP_END_DTIME AS contentPopupEndDtime,
+            C.USE_YN AS useYn,
+            C.REGI_ID AS regiId,
+            C.REGI_DTIME AS regiDtime,
+            C.MODI_ID AS modiId,
+            C.MODI_DTIME AS modiDtime,
+            D.REPLY_CNT AS replyCnt FROM
+            (SELECT A.* FROM
+            (SELECT *FROM
+            BBS_CONTENT
+            WHERE (CONTENT_TYPE = 1 OR CONTENT_TYPE = 2)
+            ORDER BY CONTENT_ID DESC
+            ) A
+            UNION ALL
+            SELECT B.* FROM
+            (SELECT *
+            FROM BBS_CONTENT
+            WHERE CONTENT_TYPE = 0
+            ORDER BY CONTENT_ID DESC) B) C
+            LEFT OUTER JOIN
+            (SELECT CONTENT_ID, COUNT(REPLY_ID) AS REPLY_CNT FROM BBS_REPLY
+            WHERE USE_YN = 'Y'
+            GROUP BY CONTENT_ID) D
+            ON C.CONTENT_ID = D.CONTENT_ID
+            WHERE USE_YN = 'Y'
+            AND BBS_ID = #{bbsId}
+            AND CASE WHEN isnull(C.CONTENT_STA_DTIME) THEN TRUE ELSE C.CONTENT_STA_DTIME &lt;= now() END
+            AND CASE WHEN isnull(C.CONTENT_END_DTIME) THEN TRUE ELSE C.CONTENT_END_DTIME &gt;= now() END
+            LIMIT 0, 4
+    </select>
+
+
+
+    <update id="updateContent" parameterType="Content">
+        UPDATE BBS_CONTENT
+        SET CONTENT_SUBJECT = #{contentSubject},
+            CONTENT_DETAILS = #{contentDetails},
+            CONTENT_TYPE = #{contentType},
+            CONTENT_POPUP_YN = #{contentPopupYn},
+            MODI_ID = #{modiId},
+            MODI_DTIME = now()
+            <if test="contentStaDtime != ''">, CONTENT_STA_DTIME = #{contentStaDtime}</if>
+            <if test="contentEndDtime != ''">, CONTENT_END_DTIME = #{contentEndDtime}</if>
+            <if test="contentPopupStaDtime != ''">, CONTENT_POPUP_STA_DTIME = #{contentPopupStaDtime}</if>
+            <if test="contentPopupEndDtime != ''">, CONTENT_POPUP_END_DTIME = #{contentPopupEndDtime}</if>
+        WHERE CONTENT_ID = #{contentId}
+    </update>
+
+    <update id="deleteContent" parameterType="map">
+        <![CDATA[
+        UPDATE BBS_CONTENT
+        SET USE_YN = 'N',
+            MODI_ID = #{userId},
+            MODI_DTIME = now()
+        WHERE CONTENT_ID = #{contentId}
+        ]]>
+    </update>
+
+
+    <update id="updateViewCnt" parameterType="int">
+        <![CDATA[
+        UPDATE BBS_CONTENT
+        SET CONTENT_VIEW_CNT = CONTENT_VIEW_CNT + 1
+        WHERE CONTENT_ID = #{contentId}
+        ]]>
+    </update>
+
+
+
+</mapper>

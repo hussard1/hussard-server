@@ -1,0 +1,97 @@
+@CHARSET "UTF-8";
+
+/*custom_select_box*/
+.select_wrapper{
+    float: left;
+    display: inline-block;
+    border: 1px solid #d8d8d8;            
+    background: url("/static/image/bbs/store/common/bg_select_arr.gif") no-repeat right center;
+    cursor: pointer;
+  }
+  
+  .h34, .h34 select{
+    height: 34px;
+    line-height: 34px;
+  }
+  
+  .h23, .h23 select{
+    height: 23px;
+    line-height: 23px;
+  }
+
+  .select_wrapper .holder{
+    display: block;
+    margin: 0 35px 0 5px;
+    white-space: nowrap;            
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    z-index: 3;
+    font-size : 12px;
+    text-align: left;
+  }
+  
+  .select_wrapper select{
+    margin: 0;
+    position: absolute;
+    z-index: 2;            
+    cursor: pointer;
+    outline: none;
+    opacity: 0;
+    /* CSS hacks for older browsers */
+    _noFocusLine: expression(this.hideFocus=true); 
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: alpha(opacity=0);
+    -khtml-opacity: 0;
+    -moz-opacity: 0;
+  }
+  
+.select_box {
+    position: relative;
+    height: 40px;
+    background: url(/static/image/bbs/store/common/bg_select_arr.gif) right center no-repeat; /* 화살표 이미지 */
+    border: 1px solid #dbdbdb;
+}
+.select_box label {
+    position: absolute;
+    font-size: 14px;
+    color: #888888;
+    left: 5px;
+}
+.select_box select {
+    width: 100%;
+    height: 40px;
+    min-height: 40px;
+    line-height: 40px;
+    padding-left: 5px;
+    padding-right: 10px;
+    opacity: 0;
+    filter: alpha(opacity=0); /* IE 8 */
+}
+
+
+.select_box_36 {
+    position: relative;
+    height: 36px;
+    background: url(/static/image/bbs/store/common/bg_select_arr.gif) right center no-repeat; /* 화살표 이미지 */
+    border: 1px solid #dbdbdb;
+}
+.select_box_36 label {
+    position: absolute;
+    font-size: 14px;
+    color: #888888;
+    left: 5px;
+    line-height: 36px;
+}
+.select_box_36 select {
+    width: 100%;
+    height: 36px;
+    min-height: 36px;
+    line-height: 36px;
+    padding-left: 5px;
+    padding-right: 10px;
+    opacity: 0;
+    filter: alpha(opacity=0); /* IE 8 */
+}
+
+  

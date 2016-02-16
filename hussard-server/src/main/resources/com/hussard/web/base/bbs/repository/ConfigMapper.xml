@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hussard.web.base.bbs.repository.ConfigMapper">
+
+    <select id="findConfigByBbsId" parameterType="int" resultType="Config">
+        <![CDATA[
+        SELECT BBS_ID AS bbsId,
+                BBS_NAME AS bbsName,
+                BBS_DESCRIPTION AS bbsDesc,
+                PER_PAGE AS perPage,
+                REPLY_YN AS replyYn,
+                READ_AUTH AS readAuth,
+                WRITE_AUTH AS writeAuth,
+                REPLY_WRITE_AUTH AS replyWriteAuth,
+                USE_YN AS useYn,
+                REGI_ID AS regiId,
+                REGI_DTIME AS regiDtime,
+                MODI_ID AS modiId,
+                MODI_DTIME AS modiDtime
+        FROM BBS_CONFIG
+        WHERE BBS_ID = #{bbsId}
+        ]]>
+    </select>
+
+    <select id="findConfigList" resultType="Config">
+        <![CDATA[
+            SELECT BBS_ID AS bbsId,
+            BBS_NAME AS bbsName,
+            PER_PAGE AS perPage,
+            REPLY_YN AS replyYn,
+            READ_AUTH AS readAuth,
+            WRITE_AUTH AS writeAuth,
+            REPLY_WRITE_AUTH AS replyWriteAuth,
+            USE_YN AS useYn,
+            REGI_ID AS regiId,
+            REGI_DTIME AS regiDtime,
+            MODI_ID AS modiId,
+            MODI_DTIME AS modiDtime
+            FROM BBS_CONFIG
+        ]]>
+    </select>
+
+    <update id="updateConfig" parameterType="Config">
+        <![CDATA[
+        UPDATE BBS_CONFIG
+           SET BBS_NAME = #{bbsName},
+               BBS_DESCRIPTION = #{bbsDesc},
+               PER_PAGE = #{perPage},
+               REPLY_YN = #{replyYn},
+               READ_AUTH = #{readAuth},
+               WRITE_AUTH = #{writeAuth},
+               REPLY_WRITE_AUTH = #{replyWriteAuth},
+               MODI_DTIME = now()
+         WHERE BBS_ID = #{bbsId}
+        ]]>
+    </update>
+
+
+    <insert id="saveConfig" parameterType="Config">
+        <![CDATA[
+        INSERT INTO BBS_CONFIG (
+          BBS_NAME,
+          BBS_DESCRIPTION,
+          PER_PAGE,
+          REPLY_YN,
+          READ_AUTH,
+          WRITE_AUTH,
+          REPLY_WRITE_AUTH,
+          REGI_DTIME
+        ) VALUES (
+          #{bbsName},
+          #{bbsDesc},
+          #{perPage},
+          #{replyYn},
+          #{readAuth},
+          #{writeAuth},
+          #{replyWriteAuth},
+          now()
+        )
+        ]]>
+    </insert>
+
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hussard.web.base.bbs.repository.ReplyMapper">
+
+    <insert id="saveReply" parameterType="Reply">
+        <![CDATA[
+        INSERT INTO BBS_REPLY(CONTENT_ID, REPLY_DETAILS, REGI_IPADDRESS, REGI_ID, REGI_DTIME)
+        VALUES (
+          #{contentId},
+          #{replyDetails},
+          #{regiIpAddress},
+          #{regiId},
+          now()
+        )
+        ]]>
+    </insert>
+
+    <select id="findReplyList" parameterType="int" resultType="Reply">
+        <![CDATA[
+        SELECT
+            REPLY_ID AS replyId,
+            CONTENT_ID AS contentId,
+            REPLY_DETAILS AS replyDetails,
+            REGI_IPADDRESS AS regiIpAddress,
+            USE_YN AS useYn,
+            REGI_ID AS regiId,
+            REGI_DTIME AS regiDtime,
+            MODI_ID AS modiId,
+            MODI_DTIME AS modiDtime
+        FROM BBS_REPLY
+        where CONTENT_ID = #{contentId}
+        and USE_YN = 'Y'
+        ]]>
+    </select>
+
+    <update id="deleteReply" parameterType="Reply">
+        <![CDATA[
+        UPDATE BBS_REPLY
+        SET USE_YN = 'N',
+            MODI_ID = #{modiId},
+            MODI_DTIME = now()
+        WHERE REPLY_ID = #{replyId}
+        ]]>
+    </update>
+
+</mapper>

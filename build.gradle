@@ -1,0 +1,245 @@
+buildscript {
+    repositories {
+        maven { url "https://repo.spring.io/plugins-release" }
+    }
+    dependencies {
+        classpath("org.springframework.build.gradle:propdeps-plugin:0.0.7")
+        classpath("org.asciidoctor:asciidoctor-gradle-plugin:1.5.2")
+        classpath("io.spring.gradle:docbook-reference-plugin:0.3.1")
+        classpath("ws.antonov.gradle.plugins:gradle-plugin-protobuf:0.9.1")
+    }
+}
+
+//ext {
+//	linkHomepage = 'https://projects.spring.io/spring-framework'
+//	linkCi = 'https://build.spring.io/browse/SPR'
+//	linkIssue = 'https://jira.spring.io/browse/SPR'
+//	linkScmUrl = 'https://github.com/spring-projects/spring-framework'
+//	linkScmConnection = 'scm:git:git://github.com/spring-projects/spring-framework.git'
+//	linkScmDevConnection = 'scm:git:ssh://git@github.com:spring-projects/spring-framework.git'
+//
+//	moduleProjects  = subprojects.findAll {
+//		!it.name.equals('spring-build-src') && !it.name.equals('spring-framework-bom')
+//	}
+//}
+
+configure(allprojects) { project ->
+    group = "com.hussard"
+    version = qualifyVersionIfNecessary(version)
+
+    ext.springVersion           = "4.1.6.RELEASE"
+    ext.springSecurityVersion   = "4.0.1.RELEASE"
+    ext.springDataMongo         = "1.7.0.RELEASE"
+    ext.hibernateVersion        = "4.3.9.Final"
+    ext.slf4jVersion			= "1.7.12"
+    ext.junitVersion			= "4.12"
+    ext.snifferVersion          = "1.14"
+    ext.fasterxmlVersion		= "2.5.3"
+
+    ext.gradleScriptDir = "${rootProject.projectDir}/gradle"
+
+    apply plugin: "java"
+    apply from: "${gradleScriptDir}/ide.gradle"
+
+    configurations {
+        sniffer
+        javaApiSignature
+    }
+
+    compileJava.options*.compilerArgs = [
+            "-Xlint:serial", "-Xlint:varargs", "-Xlint:cast", "-Xlint:classfile",
+            "-Xlint:dep-ann", "-Xlint:divzero", "-Xlint:empty", "-Xlint:finally",
+            "-Xlint:overrides", "-Xlint:path", "-Xlint:processing", "-Xlint:static",
+            "-Xlint:try", "-Xlint:fallthrough", "-Xlint:rawtypes", "-Xlint:deprecation",
+            "-Xlint:unchecked", "-Xlint:-options", "-Werror"
+    ]
+
+    compileTestJava.options*.compilerArgs = [
+            "-Xlint:serial", "-Xlint:varargs", "-Xlint:cast", "-Xlint:classfile",
+            "-Xlint:dep-ann", "-Xlint:divzero", "-Xlint:empty", "-Xlint:finally",
+            "-Xlint:overrides", "-Xlint:path", "-Xlint:processing", "-Xlint:static",
+            "-Xlint:try", "-Xlint:-fallthrough", "-Xlint:-rawtypes", "-Xlint:-deprecation",
+            "-Xlint:-unchecked", "-Xlint:-options"
+    ]
+
+    compileJava {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    compileTestJava {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+        options.compilerArgs += "-parameters"
+    }
+
+    test {
+        systemProperty("java.awt.headless", "true")
+        systemProperty("testGroups", project.properties.get("testGroups"))
+        scanForTestClasses = false
+        include(["**/*Tests.class", "**/*Test.class"])
+        // Since we set scanForTestClasses to false, we need to filter out inner
+        // classes with the "$" pattern; otherwise, using -Dtest.single=MyTests to
+        // run MyTests by itself will fail if MyTests contains any inner classes.
+        exclude(["**/Abstract*.class", '**/*$*'])
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        testCompile("junit:junit:${junitVersion}") {
+            exclude group:'org.hamcrest', module:'hamcrest-core'
+        }
+        testCompile("org.mockito:mockito-core:1.10.19") {
+            exclude group:'org.hamcrest', module:'hamcrest-core'
+        }
+        testCompile("org.hamcrest:hamcrest-all:1.3")
+
+        sniffer("org.codehaus.mojo:animal-sniffer-ant-tasks:${snifferVersion}")
+        javaApiSignature("org.codehaus.mojo.signature:java16:1.1@signature")  // as from JDK 6 update 18
+    }
+
+    task copyJavaApiSignature(type: Copy) {
+        ext.to = file("$buildDir/javaApiSignature/")
+        description "Copy the resolved Animal Sniffer signature dependency artifact to a known location and name"
+        from configurations.javaApiSignature
+        into to
+        rename '.*signature', 'javaApi.signature'
+    }
+
+    task sniff {
+        group = "Verification"
+        description = "Checks the Java API signatures"
+
+        dependsOn compileJava
+        dependsOn copyJavaApiSignature
+
+        inputs.dir sourceSets.main.output.classesDir
+        inputs.dir copyJavaApiSignature.to
+
+        doLast {
+            ant.taskdef(
+                    name: 'animalSniffer',
+                    classname: 'org.codehaus.mojo.animal_sniffer.ant.CheckSignatureTask',
+                    classpath: configurations.sniffer.asPath
+            )
+
+            ant.animalSniffer(
+                    signature: "$buildDir/javaApiSignature/javaApi.signature",
+                    classpath: sourceSets.main.compileClasspath.asPath) {
+                path(path: sourceSets.main.output.classesDir)
+                annotation(className: "org.springframework.lang.UsesJava7")
+                annotation(className: "org.springframework.lang.UsesJava8")
+                annotation(className: "org.springframework.lang.UsesSunHttpServer")
+            }
+        }
+    }
+
+    ext.javadocLinks = [
+            "http://docs.oracle.com/javase/8/docs/api/",
+            "http://docs.oracle.com/javaee/7/api/",
+            "http://docs.oracle.com/cd/E13222_01/wls/docs90/javadocs/",  // CommonJ
+            "http://pic.dhe.ibm.com/infocenter/wasinfo/v7r0/topic/com.ibm.websphere.javadoc.doc/web/apidocs/",
+            "http://glassfish.java.net/nonav/docs/v3/api/",
+            "http://docs.jboss.org/jbossas/javadoc/4.0.5/connector/",
+            "http://docs.jboss.org/jbossas/javadoc/7.1.2.Final/",
+            "http://commons.apache.org/proper/commons-lang/javadocs/api-2.5/",
+            "http://commons.apache.org/proper/commons-codec/apidocs/",
+            "http://commons.apache.org/proper/commons-dbcp/apidocs/",
+            "http://portals.apache.org/pluto/portlet-2.0-apidocs/",
+            "http://tiles.apache.org/tiles-request/apidocs/",
+            "http://tiles.apache.org/framework/apidocs/",
+            "http://aopalliance.sourceforge.net/doc/",
+            "http://www.eclipse.org/aspectj/doc/released/aspectj5rt-api/",
+            "http://ehcache.org/apidocs/",
+            "http://quartz-scheduler.org/api/2.2.0/",
+            "http://fasterxml.github.com/jackson-core/javadoc/2.3.0/",
+            "http://fasterxml.github.com/jackson-databind/javadoc/2.3.0/",
+            "http://fasterxml.github.io/jackson-dataformat-xml/javadoc/2.3.0/",
+            "http://hc.apache.org/httpcomponents-client-ga/httpclient/apidocs/"
+    ] as String[]
+}
+
+configure(subprojects) { subproject ->
+    //apply plugin: "merge"
+    //apply from: "${gradleScriptDir}/publish-maven.gradle"
+
+    configurations {
+        jacoco
+    }
+
+    dependencies {
+        jacoco("org.jacoco:org.jacoco.agent:0.7.1.201405082137:runtime")
+    }
+
+    gradle.taskGraph.whenReady {taskGraph ->
+        if (taskGraph.hasTask(':sonarRunner')) {
+            Test.jvmArgs "-javaagent:${configurations.jacoco.asPath}=destfile=${buildDir}/jacoco.exec,includes=org.springframework.*"
+        }
+    }
+
+    jar {
+        manifest.attributes["Created-By"] =
+                "${System.getProperty("java.version")} (${System.getProperty("java.specification.vendor")})"
+        manifest.attributes["Implementation-Title"] = subproject.name
+        manifest.attributes["Implementation-Version"] = subproject.version
+
+        from("${rootProject.projectDir}/src/dist") {
+            include "license.txt"
+            include "notice.txt"
+            into "META-INF"
+            expand(copyright: new Date().format("yyyy"), version: project.version)
+        }
+    }
+
+    javadoc {
+        description = "Generates project-level javadoc for use in -javadoc jar"
+
+        options.memberLevel = org.gradle.external.javadoc.JavadocMemberLevel.PROTECTED
+        options.author = true
+        options.header = project.name
+        options.links(project.ext.javadocLinks)
+        options.addStringOption('Xdoclint:none', '-quiet')
+
+        // suppress warnings due to cross-module @see and @link references;
+        // note that global 'api' task does display all warnings.
+        logging.captureStandardError LogLevel.INFO
+        logging.captureStandardOutput LogLevel.INFO // suppress "## warnings" message
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+        // don't include or exclude anything explicitly by default. See SPR-12085.
+    }
+
+    task javadocJar(type: Jar) {
+        classifier = "javadoc"
+        from Javadoc
+    }
+
+    artifacts {
+        archives sourcesJar
+        archives javadocJar
+    }
+}
+
+/*
+ * Support publication of artifacts versioned by topic branch.
+ * CI builds supply `-P BRANCH_NAME=<TOPIC>` to gradle at build time.
+ * If <TOPIC> starts with 'MAN-', change version
+ *     from BUILD-SNAPSHOT => <TOPIC>-SNAPSHOT
+ *     e.g. 1.0.0.BUILD-SNAPSHOT => 1.0.0.MAN-1234-SNAPSHOT
+ */
+def qualifyVersionIfNecessary(version) {
+    if (rootProject.hasProperty("BRANCH_NAME")) {
+        def qualifier = rootProject.getProperty("BRANCH_NAME")
+        if (qualifier.startsWith("MAN-")) {
+            return version.replace('BUILD', qualifier)
+        }
+    }
+    return version
+}

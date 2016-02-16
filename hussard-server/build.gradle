@@ -1,0 +1,47 @@
+description "hussard Server Platform"
+
+apply plugin: "war"
+
+dependencies {
+    compile("javax:javaee-api:7.0")
+    compile("javax:javaee-web-api:7.0")
+    compile("javax.servlet:javax.servlet-api:3.0.1")
+    compile("javax.servlet:jsp-api:2.0")
+    compile("javax.servlet:jstl:1.2")
+    compile("com.google.code.findbugs:jsr305:3.0.0")
+
+    compile("commons-fileupload:commons-fileupload:1.3.1")
+    compile("commons-collections:commons-collections:3.2.1")
+
+    compile("ch.qos.logback:logback-classic:1.1.3")
+
+    compile("org.springframework:spring-context-support:${springVersion}")
+    compile("org.springframework:spring-web:${springVersion}")
+    compile("org.springframework:spring-webmvc:${springVersion}")
+    compile("org.springframework:spring-orm:${springVersion}")
+    compile("org.springframework.data:spring-data-mongodb:${springDataMongo}")
+
+    compile("org.springframework.security:spring-security-core:${springSecurityVersion}");
+    compile("org.springframework.security:spring-security-config:${springSecurityVersion}");
+    compile("org.springframework.security:spring-security-web:${springSecurityVersion}");
+    compile("org.springframework.security:spring-security-taglibs:${springSecurityVersion}");
+
+    compile("org.mybatis:mybatis:3.3.0")
+    compile("org.mybatis:mybatis-spring:1.2.3")
+    compile("org.hibernate:hibernate-validator:5.1.2.Final")
+    compile("mysql:mysql-connector-java:5.1.31")
+    compile("com.jolbox:bonecp:0.8.0.RELEASE")
+
+    compile("org.apache.tiles:tiles-extras:3.0.5")
+
+    compile("net.sf.json-lib:json-lib:2.4:jdk15")
+    compile("com.googlecode.json-simple:json-simple:1.1.1")
+
+    compile("com.fasterxml.jackson.core:jackson-core:${fasterxmlVersion}")
+    compile("com.fasterxml.jackson.core:jackson-annotations:${fasterxmlVersion}")
+    compile("com.fasterxml.jackson.core:jackson-databind:${fasterxmlVersion}")
+
+    compile("org.thymeleaf:thymeleaf-spring4:2.1.4.RELEASE")
+    compile("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:1.2.1")
+
+}

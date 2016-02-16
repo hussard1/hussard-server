@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hussard.web.base.user.repository.UserTokenMapper">
+    
+    <select id="getTokenBySeries" parameterType="map" resultType="com.hussard.web.base.user.domain.Token">
+        <![CDATA[
+        SELECT SERIES AS series
+             , USER_ID AS username
+             , TOKEN_VALUE AS tokenValue
+             , LAST_USED AS lastUsed
+          FROM USER_TOKEN
+         WHERE SERIES = #{series}
+        ]]>
+    </select>
+
+    <insert id="createNewToken" parameterType="com.hussard.web.base.user.domain.Token">
+        <![CDATA[
+        INSERT INTO USER_TOKEN (
+          SERIES,
+          USER_ID,
+          TOKEN_VALUE,
+          LAST_USED
+        ) VALUES (
+          #{series},
+          #{username},
+          #{tokenValue},
+          #{lastUsed} )
+        ]]>
+    </insert>
+
+    <update id="updateToken" parameterType="map">
+        <![CDATA[
+        UPDATE USER_TOKEN
+           SET TOKEN_VALUE = #{tokenValue},
+               LAST_USED = #{lastUsed}
+         WHERE SERIES = #{series}
+        ]]>
+    </update>
+
+    <delete id="removeUserToken" parameterType="map">
+        <![CDATA[
+        DELETE
+          FROM USER_TOKEN
+         WHERE USER_ID = #{username}
+        ]]>
+    </delete>
+
+</mapper>

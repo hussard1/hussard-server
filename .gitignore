@@ -1,0 +1,17 @@
+*.iml
+*.ipr
+*.iws
+*.bak
+.classpath
+.project
+.settings
+.svn
+.gradle
+.idea
+.metadata/
+.vagrant/
+Servers/
+META-INF/
+build/
+out/
+bin/

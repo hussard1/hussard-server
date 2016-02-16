@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hussard.web.base.setup.repository.MessageMapper">
+    
+    <select id="getMessages" resultType="com.hussard.web.base.domain.Message">
+        <![CDATA[
+            SELECT ID as id
+                 , MESSAGE_CD  as code
+                 , COUNTRY_CD  as countryCode
+                 , COUNTRY_NM  as countryName
+                 , LANGUAGE_CD as languageCode
+                 , LANGUAGE_NM as languageName
+                 , VALUE       as message
+                 , REGI_ID     as registrant
+                 , MODI_ID     as modifier
+                 , REGI_DTIME  as registrationDate
+                 , MODI_DTIME  as modificationDate
+                 , USE_YN      as useYn
+              FROM MULTILINGUAL_CODE_INFO
+        ]]>
+    </select>
+</mapper>

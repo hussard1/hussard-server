@@ -1,0 +1,3 @@
+rootProject.name = 'hussard'
+
+include 'hussard-server'

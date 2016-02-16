@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.motrex.sagespace.base.bbs.repository.FileMapper">
+
+    <insert id="saveFile" parameterType="BbsFile">
+        <![CDATA[
+        INSERT INTO BBS_FILE(CONTENT_ID, FILE_NAME, FILE_ORI_NAME, FILE_URL, FILE_SIZE, REGI_ID, REGI_DTIME)
+                VALUES (
+                  #{contentId},
+                  #{fileName},
+                  #{fileOriName},
+                  #{fileUrl},
+                  #{fileSize},
+                  #{regiId},
+                  now()
+                )
+        ]]>
+    </insert>
+
+    <select id="findFileByContentId" parameterType="int" resultType="BbsFile">
+        <![CDATA[
+        SELECT FILE_ID AS fileId,
+               CONTENT_ID AS contentId,
+               FILE_NAME AS fileName,
+               FILE_ORI_NAME AS fileOriName,
+               FILE_URL AS fileUrl,
+               FILE_SIZE AS fileSize,
+               USE_YN AS useYn,
+               REGI_ID AS regiId,
+               REGI_DTIME AS regiDtime,
+               MODI_ID AS modiId,
+               MODI_DTIME AS modiDtime
+        FROM BBS_FILE
+        WHERE USE_YN = 'Y'
+        AND CONTENT_ID = #{contentId}
+        ORDER BY FILE_ID DESC
+        LIMIT 0, 2
+        ]]>
+    </select>
+
+    <select id="findFileByFileId" parameterType="int" resultType="BbsFile">
+        SELECT FILE_ID AS fileId,
+               CONTENT_ID AS contentId,
+               FILE_NAME AS fileName,
+               FILE_ORI_NAME AS fileOriName,
+               FILE_URL AS fileUrl,
+               FILE_SIZE AS fileSize,
+               USE_YN AS useYn,
+               REGI_ID AS regiId,
+               REGI_DTIME AS regiDtime,
+               MODI_ID AS modiId,
+               MODI_DTIME AS modiDtime
+        FROM BBS_FILE
+        WHERE USE_YN = 'Y'
+        AND FILE_ID = #{fileId}
+    </select>
+
+
+    <update id="deleteFile" parameterType="map">
+        <![CDATA[
+        UPDATE BBS_FILE
+        SET USE_YN = 'N',
+            MODI_ID = #{userId},
+            MODI_DTIME = now()
+        WHERE FILE_ID = #{fileId}
+        ]]>
+    </update>
+
+</mapper>
