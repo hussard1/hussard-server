@@ -14,11 +14,9 @@ public interface BbsService {
 
     Config findConfigByBbsId(int bbsId);
 
-    List<Content> findList(int bbsId, int pageNum, int searchMode, String searchContent, int perPage);
+    List<Content> findList(int bbsId, int pageNum, int perPage, int searchMode, String searchContent);
 
-    Map<String, Object> caculatePaging(int pageNum, int perPage, int totalContentCnt);
-
-    int findCountByBbsId(int bbsId, int searchMode, String searchContent);
+    long findCountByBbsId(int bbsId, int searchMode, String searchContent);
 
     void saveContent(Content content);
 

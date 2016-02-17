@@ -8,6 +8,7 @@ import com.hussard.web.base.bbs.service.BbsService;
 import com.hussard.web.base.bbs.service.FileService;
 import com.hussard.web.base.bbs.service.ReplyService;
 import com.hussard.web.base.bbs.validator.FileSizeValidator;
+import com.hussard.web.base.util.PageNation;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,23 +52,15 @@ public class BbsApiController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> ajaxBbsList(@RequestParam(value = "bbsId", defaultValue= "1") int bbsId, @RequestParam(value="pagenum", defaultValue = "1") int pageNum,
+    public Map<String, Object> ajaxBbsList(@RequestParam(value = "bbsId", defaultValue= "1") int bbsId, @RequestParam(value="page", defaultValue = "1") int page,
                                            @RequestParam(value = "searchMode", required = false, defaultValue = "0") int searchMode,
                                            @RequestParam(value = "searchContent", required = false) String searchContent,
                                            ModelMap model, HttpServletResponse response) {
 
-//        if (!bbsService.validReadAuth(bbsId)) {
-//            return "redirect:/auth/c/login." + suffix;
-//        }
-
-//        if (bbsService.validWriteAuth(bbsId)) {
-//            model.addAttribute("writeAuth", "true");
-//        }
-
         Config config =  bbsService.findConfigByBbsId(bbsId);
-        List<Content> contents = bbsService.findList(bbsId, pageNum, searchMode, searchContent, config.getPerPage());
-        int totalContentCnt = bbsService.findCountByBbsId(bbsId, searchMode, searchContent);
-        Map<String, Object> pagingMap = bbsService.caculatePaging(pageNum, config.getPerPage(), totalContentCnt);
+        List<Content> contents = bbsService.findList(bbsId, page, searchMode, searchContent, config.getPerPage());
+        long totalContentCnt = bbsService.findCountByBbsId(bbsId, searchMode, searchContent);
+        PageNation pageNation = new PageNation(page, config.getPerPage(), totalContentCnt);
 
         Map <String, Object> map = new HashMap<>();
 
@@ -75,8 +68,7 @@ public class BbsApiController {
         map.put("bbsName", config.getBbsName());
         map.put("bbsDesc", config.getBbsDesc());
         map.put("contents", contents);
-        map.put("pageNum", pageNum);
-        map.putAll(pagingMap);
+        map.put("pageNation", pageNation);
         map.put("searchContent", searchContent);
         map.put("searchMode", searchMode);
         return map;
@@ -177,13 +169,13 @@ public class BbsApiController {
         fileSizeValidator.validate(content, result);
         if (result.hasErrors()) {
             model.addAttribute("bbsId", content.getBbsId());
-            model.addAttribute("contentId", content.getContentId());
+            model.addAttribute("contentId", content.getId());
             return "bbs/bbs/updateform";
         }
 
         //�ڽ��� ���� �´��� Ȯ��
 //        bbsService.validOwn(num, request){}
-        content.setModiId(userid);
+        content.getDefaultColumns().setModifier(userid);
 
         if(content.getFileDelId() != null) {
             fileService.deleteFile(content, userid);
@@ -191,7 +183,7 @@ public class BbsApiController {
         bbsService.updateContent(content);
         fileService.saveFile(content, content.getFileUpload());
 
-        return "redirect:/bbs/bbs/detail." + suffix + "?bbsId=" + content.getBbsId() + "&contentid=" + content.getContentId();
+        return "redirect:/bbs/bbs/detail." + suffix + "?bbsId=" + content.getBbsId() + "&contentid=" + content.getId();
     }
 
     @RequestMapping(value = "/delete.{suffix}", method = RequestMethod.GET)
@@ -227,7 +219,7 @@ public class BbsApiController {
         }
 
         reply.setRegiIpAddress(request.getRemoteAddr());
-        reply.setRegiId(userid);
+        reply.getDefaultColumns().setRegistrant(userid);
 
         replyService.saveReply(reply);
 
@@ -243,7 +235,7 @@ public class BbsApiController {
         String userId = "test";
 
 //        reply.setModiId(user.getUsername());
-        reply.setModiId(userId);
+        reply.getDefaultColumns().setModifier(userId);
         replyService.deleteReply(reply);
 
 

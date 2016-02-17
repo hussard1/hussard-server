@@ -1,27 +1,36 @@
 package com.hussard.web.base.bbs.domain;
 
-import java.util.Date;
+import com.hussard.web.base.domain.DefaultColumns;
 
-public class BbsFile {
+import javax.persistence.*;
+import java.io.Serializable;
 
-	private int fileId;
+@Entity
+public class BbsFile implements Serializable{
+
+	private static final long serialVersionUID = 5284702939442078668L;
+
+	@Id
+	@GeneratedValue(strategy= GenerationType.AUTO)
+	private int id;
 	private int contentId;
 	private String fileName;
 	private String fileOriName;
 	private String fileUrl;
 	private long fileSize;
-	private String useYn;
-	private String regiId;
-	private Date regiDtime;
-	private String modiId;
-	private Date modiDtime;
+	@Embedded
+	private DefaultColumns defaultColumns;
 
-	public int getFileId() {
-		return fileId;
+	public BbsFile() {
+		this.defaultColumns = new DefaultColumns();
 	}
 
-	public void setFileId(int fileId) {
-		this.fileId = fileId;
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public int getContentId() {
@@ -56,51 +65,19 @@ public class BbsFile {
 		this.fileSize = fileSize;
 	}
 
-	public String getUseYn() {
-		return useYn;
-	}
-
-	public void setUseYn(String useYn) {
-		this.useYn = useYn;
-	}
-
-	public String getRegiId() {
-		return regiId;
-	}
-
-	public void setRegiId(String regiId) {
-		this.regiId = regiId;
-	}
-
-	public Date getRegiDtime() {
-		return regiDtime;
-	}
-
-	public void setRegiDtime(Date regiDtime) {
-		this.regiDtime = regiDtime;
-	}
-
-	public String getModiId() {
-		return modiId;
-	}
-
-	public void setModiId(String modiId) {
-		this.modiId = modiId;
-	}
-
-	public Date getModiDtime() {
-		return modiDtime;
-	}
-
-	public void setModiDtime(Date modiDtime) {
-		this.modiDtime = modiDtime;
-	}
-
 	public String getFileOriName() {
 		return fileOriName;
 	}
 
 	public void setFileOriName(String fileOriName) {
 		this.fileOriName = fileOriName;
+	}
+
+	public DefaultColumns getDefaultColumns() {
+		return defaultColumns;
+	}
+
+	public void setDefaultColumns(DefaultColumns defaultColumns) {
+		this.defaultColumns = defaultColumns;
 	}
 }

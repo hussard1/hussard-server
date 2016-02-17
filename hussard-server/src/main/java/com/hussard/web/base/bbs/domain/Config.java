@@ -1,13 +1,23 @@
 package com.hussard.web.base.bbs.domain;
 
 
+import com.hussard.web.base.domain.DefaultColumns;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
-public class Config {
+@Entity
+public class Config implements Serializable{
 
-    private int bbsId;
+    private static final long serialVersionUID = -5980349850197237283L;
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private int id;
     @NotNull
     @Size(min=1, max=20)
     private String bbsName;
@@ -18,19 +28,19 @@ public class Config {
     private int readAuth;
     private int writeAuth;
     private int replyWriteAuth;
-    private String useYn;
-    private String regiId;
-    private Date regiDtime;
-    private String modiId;
-    private Date modiDtime;
 
+    @OneToMany(mappedBy = "config")
+    private Set<Content> content;
 
-    public int getBbsId() {
-        return bbsId;
+    @Embedded
+    private DefaultColumns defaultColumns;
+
+    public int getId() {
+        return id;
     }
 
-    public void setBbsId(int bbsId) {
-        this.bbsId = bbsId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getBbsName() {
@@ -82,52 +92,27 @@ public class Config {
         this.replyWriteAuth = replyWriteAuth;
     }
 
-    public String getUseYn() {
-        return useYn;
-    }
-
-    public void setUseYn(String useYn) {
-        this.useYn = useYn;
-    }
-
-    public String getRegiId() {
-        return regiId;
-    }
-
-    public void setRegiId(String regiId) {
-        this.regiId = regiId;
-    }
-
-    public Date getRegiDtime() {
-        return regiDtime;
-    }
-
-    public void setRegiDtime(Date regiDtime) {
-        this.regiDtime = regiDtime;
-    }
-
-    public String getModiId() {
-        return modiId;
-    }
-
-    public void setModiId(String modiId) {
-        this.modiId = modiId;
-    }
-
-    public Date getModiDtime() {
-        return modiDtime;
-    }
-
-    public void setModiDtime(Date modiDtime) {
-        this.modiDtime = modiDtime;
-    }
-
-
     public String getBbsDesc() {
         return bbsDesc;
     }
 
     public void setBbsDesc(String bbsDesc) {
         this.bbsDesc = bbsDesc;
+    }
+
+    public Set<Content> getContent() {
+        return content;
+    }
+
+    public void setContent(Set<Content> content) {
+        this.content = content;
+    }
+
+    public DefaultColumns getDefaultColumns() {
+        return defaultColumns;
+    }
+
+    public void setDefaultColumns(DefaultColumns defaultColumns) {
+        this.defaultColumns = defaultColumns;
     }
 }

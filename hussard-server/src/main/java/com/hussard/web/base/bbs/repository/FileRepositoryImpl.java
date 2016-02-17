@@ -2,50 +2,56 @@ package com.hussard.web.base.bbs.repository;
 
 import com.hussard.web.base.bbs.domain.BbsFile;
 import com.hussard.web.base.bbs.domain.Content;
-import org.apache.ibatis.session.SqlSession;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Created by user on 2015-07-13.
+ * Created by user on 2016-02-16.
  */
-@Repository
-public class FileRepositoryImpl implements FileRepository{
 
-    final static String namespace = "com.hussard.web.base.bbs.repository.FileMapper";
+@Repository
+public class FileRepositoryImpl implements FileRepository {
 
     @Autowired
-    private SqlSession sqlSession;
+    private SessionFactory sessionFactory;
 
     @Override
+    @Transactional
     public void saveFile(BbsFile bbsFile) {
-        sqlSession.insert(namespace + ".saveFile", bbsFile);
+        Session session = sessionFactory.getCurrentSession();
+        session.save(bbsFile);
     }
 
     @Override
+    @Transactional
+    @SuppressWarnings("unchecked")
     public List<BbsFile> findFileByContentId(int contentId) {
-        return sqlSession.selectList(namespace + ".findFileByContentId", contentId);
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(BbsFile.class);
+
+        return  criteria.add(Restrictions.eq("content.id", contentId)).list();
     }
 
     @Override
+    @Transactional
     public BbsFile findFileByFileId(int fileId) {
-        return sqlSession.selectOne(namespace + ".findFileByFileId", fileId);
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(BbsFile.class);
+
+        return (BbsFile) criteria.add(Restrictions.eq("id", fileId)).uniqueResult();
     }
 
     @Override
+    @Transactional
     public void deleteFile(Content content, String userId) {
-
-        Map<String, Object> parameterMap = new HashMap<>();
-        parameterMap.put("userId", userId);
-
-        Integer[] fileIds = content.getFileDelId();
-        for(int i = 0; i < fileIds.length; i++){
-            parameterMap.put("fileId", fileIds[i]);
-            sqlSession.update(namespace + ".deleteFile", parameterMap);
-        }
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(BbsFile.class);
     }
 }

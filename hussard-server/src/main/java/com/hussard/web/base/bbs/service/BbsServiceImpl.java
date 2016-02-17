@@ -31,13 +31,12 @@ public class BbsServiceImpl implements BbsService {
     }
 
     @Override
-    public List<Content> findList(int bbsId, int pageNum, int searchMode, String searchContent, int perPage){
+    public List<Content> findList(int bbsId, int pageNum, int perPage, int searchMode, String searchContent){
 
-        return contentRepository.findListBySearchMode(bbsId, pageNum, searchMode, searchContent, perPage);
+        return contentRepository.findListBySearchMode(bbsId, pageNum, perPage, searchMode, searchContent);
     }
 
-    @Override
-    public Map<String, Object> caculatePaging(int pageNum, int perPage, int totalContentCnt){
+    public Map<String, Object> caculatePaging(int pageNum, int perPage, long totalContentCnt){
 
         Map<String, Object> pagingMap = new HashMap<>();
 
@@ -57,12 +56,13 @@ public class BbsServiceImpl implements BbsService {
         int endpage = startpage + pageNum_list -1;
 
         if (totalContentCnt % perPage == 0) {
-            totalpage = (totalContentCnt / perPage);
+            totalpage = ((int)totalContentCnt / perPage);
         } else {
-            totalpage = (totalContentCnt / perPage) + 1;
+            totalpage = ((int)totalContentCnt / perPage) + 1;
         }
 
         if(endpage > totalpage)
+
             endpage = totalpage;
 
         if (totalpage % pageNum_list == 0) {
@@ -81,7 +81,7 @@ public class BbsServiceImpl implements BbsService {
     }
 
     @Override
-    public int findCountByBbsId(int bbsId, int searchMode, String searchContent) {
+    public long findCountByBbsId(int bbsId, int searchMode, String searchContent) {
         return contentRepository.findCountByBbsId(bbsId, searchMode, searchContent);
     }
 
