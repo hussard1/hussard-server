@@ -50,8 +50,8 @@ public class BbsAdminController {
         return "bbs/admin/form";
     }
 
-    @RequestMapping(value = "/savebbs.{suffix}", method = RequestMethod.POST)
-    public String saveBbsDetail(@PathVariable String suffix, Model model, @Valid Config config, BindingResult result) {
+    @RequestMapping(value = "/savebbs", method = RequestMethod.POST)
+    public String saveBbsDetail(Model model, @Valid Config config, BindingResult result) {
 
         if(result.hasErrors()){
             model.addAttribute("config", config);
@@ -61,7 +61,7 @@ public class BbsAdminController {
 
         bbsService.saveConfig(config);
 
-        return "redirect:/bbs/admin/list." + suffix;
+        return "redirect:/bbs/admin/list";
     }
 
     @RequestMapping(value = "/updatebbs", method = RequestMethod.GET)
@@ -77,8 +77,8 @@ public class BbsAdminController {
 
 
 
-    @RequestMapping(value = "/updatebbs.{suffix}", method = RequestMethod.POST)
-    public String updateBbsDetail(@PathVariable String suffix, Model model, @Valid Config config, BindingResult result) {
+    @RequestMapping(value = "/updatebbs", method = RequestMethod.POST)
+    public String updateBbsDetail(Model model, @Valid Config config, BindingResult result) {
 
         if(result.hasErrors()){
             model.addAttribute("config", config);
@@ -88,6 +88,6 @@ public class BbsAdminController {
 
         bbsService.updateConfig(config);
 
-        return "redirect:/bbs/admin/list." + suffix;
+        return "redirect:/bbs/admin/list";
     }
 }

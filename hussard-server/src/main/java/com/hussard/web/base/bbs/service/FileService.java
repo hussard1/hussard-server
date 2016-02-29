@@ -24,7 +24,7 @@ public interface FileService {
 
     BbsFile findFileByFileId(int FileId);
 
-    void deleteFile(Content content, String userId);
+    void deleteFile(Content content);
 
     InputStream getArchiveContent(String user, BbsFile bbsFile) throws IOException;
 

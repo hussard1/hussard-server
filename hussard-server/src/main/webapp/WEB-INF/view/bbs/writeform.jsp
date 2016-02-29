@@ -22,7 +22,7 @@ pageEncoding="UTF-8"%>
 	</head>
 		<body>
 			<main>
-				<form:form method="post" action="writeform.sag" commandName="content" enctype="multipart/form-data">
+				<form:form method="post" action="writeform" commandName="content" enctype="multipart/form-data">
 				<div class="content_wrap">
 					<div class="content content_style">
 						<div class="date_search strong_box">			
@@ -66,8 +66,8 @@ pageEncoding="UTF-8"%>
 							</div>
 						</div>
 						<div class="content_regi_btn">
-							<button class="cancel_btn"><a href="<c:url value='/bbs/bbs/list.sag'>
-											<c:param name="bbsid" value="${bbsId}"/>
+							<button class="cancel_btn"><a href="<c:url value='/bbs/bbs/list'>
+											<c:param name="bbsid" value="${config.id}"/>
 											<c:param name="pagenum" value="1"/>
 									</c:url>"><spring:message code="btn.bbs.form.cancelBtn"/></a></button>
 							<form:button class="regi_btn"><spring:message code="btn.bbs.form.writeBtn"/></form:button>
@@ -116,7 +116,7 @@ pageEncoding="UTF-8"%>
 
 			CKEDITOR.replace( 'ckeditor', {//해당 이름으로 된 textarea에 에디터를 적용
 				width:'100%',
-				filebrowserImageUploadUrl: '/bbs/bbs/uploadimage.sag' //여기 경로로 파일을 전달하여 업로드 시킨다.
+				filebrowserImageUploadUrl: '/bbs/bbs/uploadimage' //여기 경로로 파일을 전달하여 업로드 시킨다.
 			});
 
 

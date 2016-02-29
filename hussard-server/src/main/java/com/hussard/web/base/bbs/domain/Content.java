@@ -1,48 +1,78 @@
 package com.hussard.web.base.bbs.domain;
 
+import com.hussard.web.base.domain.DefaultColumns;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by user on 2015-07-01.
  */
+
+@Entity
 public class Content {
 
-    private int contentId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+    @Column(name="bbs_id")
     private int bbsId;
     @NotNull
     @Size(min=1, max=30)
+    @Column(name="content_subject")
     private String contentSubject;
     @NotNull
     @Size(min=1)
+    @Column(name="content_details")
     private String contentDetails;
+    @Column(name="content_view_cnt")
     private int contentViewCnt;
+    @Column(name="regi_ip_address")
     private String regiIpAddress;
+    @Column(name="content_type")
     private int contentType;
     private String contentStaDtime;
     private String contentEndDtime;
     private int contentPopupYn;
     private String contentPopupStaDtime;
     private String contentPopupEndDtime;
-    private String useYn;
-    private String regiId;
-    private Date regiDtime;
-    private String modiId;
-    private Date modiDtime;
+    @Column(name="reply_cnt")
     private String replyCnt;
+    @Column(name="file_cnt")
     private String fileCnt;
+    @Transient
     private MultipartFile fileUpload[];
+    @Transient
     private Integer fileDelId[];
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "content_id")
+    private Set<Reply> reply;
+    @OneToMany(fetch = FetchType.EAGER)
+    @Cascade(CascadeType.ALL)
+    @JoinColumn(name = "content_id")
+    private List<BbsFile> bbsFile;
 
-    public int getContentId() {
-        return contentId;
+    @Embedded
+    private DefaultColumns defaultColumns;
+
+    public Content() {
+        this.defaultColumns = new DefaultColumns();
     }
 
-    public void setContentId(int contentId) {
-        this.contentId = contentId;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getBbsId() {
@@ -110,46 +140,6 @@ public class Content {
         this.contentEndDtime = contentEndDtime;
     }
 
-    public String getUseYn() {
-        return useYn;
-    }
-
-    public void setUseYn(String useYn) {
-        this.useYn = useYn;
-    }
-
-    public String getRegiId() {
-        return regiId;
-    }
-
-    public void setRegiId(String regiId) {
-        this.regiId = regiId;
-    }
-
-    public Date getRegiDtime() {
-        return regiDtime;
-    }
-
-    public void setRegiDtime(Date regiDtime) {
-        this.regiDtime = regiDtime;
-    }
-
-    public String getModiId() {
-        return modiId;
-    }
-
-    public void setModiId(String modiId) {
-        this.modiId = modiId;
-    }
-
-    public Date getModiDtime() {
-        return modiDtime;
-    }
-
-    public void setModiDtime(Date modiDtime) {
-        this.modiDtime = modiDtime;
-    }
-
     public String getReplyCnt() {
         return replyCnt;
     }
@@ -204,5 +194,29 @@ public class Content {
 
     public void setFileCnt(String fileCnt) {
         this.fileCnt = fileCnt;
+    }
+
+    public Set<Reply> getReply() {
+        return reply;
+    }
+
+    public void setReply(Set<Reply> reply) {
+        this.reply = reply;
+    }
+
+    public List<BbsFile> getBbsFile() {
+        return bbsFile;
+    }
+
+    public void setBbsFile(List<BbsFile> bbsFile) {
+        this.bbsFile = bbsFile;
+    }
+
+    public DefaultColumns getDefaultColumns() {
+        return defaultColumns;
+    }
+
+    public void setDefaultColumns(DefaultColumns defaultColumns) {
+        this.defaultColumns = defaultColumns;
     }
 }

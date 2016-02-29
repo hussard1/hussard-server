@@ -40,8 +40,8 @@ public class FileServiceImpl implements FileService {
                 saveArchive(filePath, fileName, fileUpload[i]);
 
                 bbsFile = new BbsFile();
-                bbsFile.setContentId(content.getContentId());
-                bbsFile.setRegiId(content.getRegiId());
+                bbsFile.setContentId(content.getId());
+                bbsFile.getDefaultColumns().setRegistrant(content.getDefaultColumns().getRegistrant());
                 bbsFile.setFileName(fileName);
                 bbsFile.setFileOriName(fileUpload[i].getOriginalFilename());
                 bbsFile.setFileSize(fileUpload[i].getSize());
@@ -105,7 +105,11 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void deleteFile(Content content, String userId) {
+    public void deleteFile(Content content) {
+
+        // TODO : change
+        String userId = "system";
+
         fileMapper.deleteFile(content, userId);
     }
 

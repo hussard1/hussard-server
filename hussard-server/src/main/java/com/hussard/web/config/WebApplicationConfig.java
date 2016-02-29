@@ -54,7 +54,7 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter {
     public ServletContextTemplateResolver templateResolver() {
         ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver();
         templateResolver.setCharacterEncoding("UTF-8");
-        templateResolver.setPrefix("/WEB-INF/templates/");
+        templateResolver.setPrefix("/WEB-INF/view/");
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode("HTML5");
         templateResolver.setCacheable(false);
@@ -75,7 +75,7 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter {
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
         viewResolver.setTemplateEngine(templateEngine());
         viewResolver.setCharacterEncoding("UTF-8");
-        viewResolver.setOrder(1);
+        viewResolver.setOrder(2);
 
         return viewResolver;
     }
@@ -86,7 +86,7 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter {
         viewResolver.setViewClass(JstlView.class);
         viewResolver.setPrefix("/WEB-INF/view/");
         viewResolver.setSuffix(".jsp");
-        viewResolver.setOrder(2);
+        viewResolver.setOrder(1);
 
         return viewResolver;
     }
@@ -114,8 +114,8 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter {
 
         List<ViewResolver> viewResolvers = new ArrayList<ViewResolver>();
         viewResolvers.add(beanNameViewResolver());
-        viewResolvers.add(thymeleafViewResolver());
         viewResolvers.add(internalResourceViewResolver());
+        viewResolvers.add(thymeleafViewResolver());
         resolver.setViewResolvers(viewResolvers);
 
         List<View> defaultViews = new ArrayList<View>();

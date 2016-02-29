@@ -1,40 +1,55 @@
 package com.hussard.web.base.bbs.repository;
 
 import com.hussard.web.base.bbs.domain.Config;
-import org.apache.ibatis.session.SqlSession;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
- * Created by user on 2015-07-13.
+ * Created by user on 2016-02-16.
  */
 @Repository
 public class ConfigRepositoryImpl implements ConfigRepository {
 
-    final static String namespace = "com.hussard.web.base.bbs.repository.ConfigMapper";
-
     @Autowired
-    private SqlSession sqlSession;
+    private SessionFactory sessionFactory;
 
     @Override
+    @Transactional
+    @SuppressWarnings("unchecked")
     public List<Config> findConfigList() {
-        return sqlSession.selectList(namespace+".findConfigList");
+        Session session = sessionFactory.getCurrentSession();
+
+        return session.createCriteria(Config.class).list();
     }
 
     @Override
+    @Transactional
     public Config findConfigByBbsId(int bbsId) {
-        return sqlSession.selectOne(namespace+".findConfigByBbsId", bbsId);
+        Session session = sessionFactory.getCurrentSession();
+
+        Criteria criteria = session.createCriteria(Config.class);
+
+        return (Config)criteria.add(Restrictions.eq("id", bbsId)).uniqueResult();
     }
 
     @Override
+    @Transactional
     public void saveConfig(Config config) {
-        sqlSession.insert(namespace + ".saveConfig", config);
+        Session session = sessionFactory.getCurrentSession();
+        session.save(config);
     }
 
     @Override
+
     public void updateConfig(Config config) {
-        sqlSession.update(namespace + ".updateConfig", config);
+        Session session = sessionFactory.getCurrentSession();
+        session.update(config);
     }
 }

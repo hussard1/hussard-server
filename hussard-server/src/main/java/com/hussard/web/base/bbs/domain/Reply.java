@@ -1,27 +1,34 @@
 package com.hussard.web.base.bbs.domain;
 
+import com.hussard.web.base.domain.DefaultColumns;
+
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
-
+@Entity
 public class Reply {
-	private int replyId;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int id;
 	private int contentId;
 	@Size(min=1, max=300)
 	private String replyDetails;
 	private String regiIpAddress;
-	private String useYn;
-	private String regiId;
-	private Date regiDtime;
-	private String modiId;
-	private Date modiDtime;
+	@Embedded
+	private DefaultColumns defaultColumns;
 
-	public int getReplyId() {
-		return replyId;
+	public Reply() {
+		this.defaultColumns = new DefaultColumns();
 	}
 
-	public void setReplyId(int replyId) {
-		this.replyId = replyId;
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public int getContentId() {
@@ -48,43 +55,11 @@ public class Reply {
 		this.regiIpAddress = regiIpAddress;
 	}
 
-	public String getUseYn() {
-		return useYn;
+	public DefaultColumns getDefaultColumns() {
+		return defaultColumns;
 	}
 
-	public void setUseYn(String useYn) {
-		this.useYn = useYn;
-	}
-
-	public String getRegiId() {
-		return regiId;
-	}
-
-	public void setRegiId(String regiId) {
-		this.regiId = regiId;
-	}
-
-	public Date getRegiDtime() {
-		return regiDtime;
-	}
-
-	public void setRegiDtime(Date regiDtime) {
-		this.regiDtime = regiDtime;
-	}
-
-	public String getModiId() {
-		return modiId;
-	}
-
-	public void setModiId(String modiId) {
-		this.modiId = modiId;
-	}
-
-	public Date getModiDtime() {
-		return modiDtime;
-	}
-
-	public void setModiDtime(Date modiDtime) {
-		this.modiDtime = modiDtime;
+	public void setDefaultColumns(DefaultColumns defaultColumns) {
+		this.defaultColumns = defaultColumns;
 	}
 }

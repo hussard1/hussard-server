@@ -31,13 +31,13 @@ public class BbsServiceImpl implements BbsService {
     }
 
     @Override
-    public List<Content> findList(int bbsId, int pageNum, int searchMode, String searchContent, int perPage){
+    public List<Content> findContentList(int bbsId, int pageNum, int perPage, int searchMode, String searchContent){
 
-        return contentRepository.findListBySearchMode(bbsId, pageNum, searchMode, searchContent, perPage);
+        return contentRepository.findContentList(bbsId, pageNum, perPage, searchMode, searchContent);
     }
 
-    @Override
-    public Map<String, Object> caculatePaging(int pageNum, int perPage, int totalContentCnt){
+    // TODO : delete
+    public Map<String, Object> caculatePaging(int pageNum, int perPage, long totalContentCnt){
 
         Map<String, Object> pagingMap = new HashMap<>();
 
@@ -57,12 +57,13 @@ public class BbsServiceImpl implements BbsService {
         int endpage = startpage + pageNum_list -1;
 
         if (totalContentCnt % perPage == 0) {
-            totalpage = (totalContentCnt / perPage);
+            totalpage = ((int)totalContentCnt / perPage);
         } else {
-            totalpage = (totalContentCnt / perPage) + 1;
+            totalpage = ((int)totalContentCnt / perPage) + 1;
         }
 
         if(endpage > totalpage)
+
             endpage = totalpage;
 
         if (totalpage % pageNum_list == 0) {
@@ -81,18 +82,21 @@ public class BbsServiceImpl implements BbsService {
     }
 
     @Override
-    public int findCountByBbsId(int bbsId, int searchMode, String searchContent) {
-        return contentRepository.findCountByBbsId(bbsId, searchMode, searchContent);
+    public long findContentCount(int bbsId, int searchMode, String searchContent) {
+        return contentRepository.findContentCount(bbsId, searchMode, searchContent);
     }
 
     @Override
     public void saveContent(Content content) {
+
+        // TODO : set registrant and date
+
         contentRepository.saveContent(content);
     }
 
     @Override
-    public Content findContentByContentId(int contentId) {
-        return contentRepository.findContentByContentId(contentId);
+    public Content findContentById(int contentId) {
+        return contentRepository.findContentById(contentId);
     }
 
     @Override
@@ -101,8 +105,11 @@ public class BbsServiceImpl implements BbsService {
     }
 
     @Override
-    public void updateViewCnt(int contentId) {
-        contentRepository.updateViewCnt(contentId);
+    public void updateViewCnt(Content content) {
+
+        content.setContentViewCnt(content.getContentViewCnt() + 1);
+
+        contentRepository.updateContent(content);
     }
 
     @Override
@@ -180,12 +187,7 @@ public class BbsServiceImpl implements BbsService {
     @Override
     public boolean validReply(int bbsId) {
         Config config = configRepository.findConfigByBbsId(bbsId);
-
-        if(config.getReplyYn().equals("Y")) {
-            return true;
-        }else{
-            return false;
-        }
+        return true;
     }
 
     @Override

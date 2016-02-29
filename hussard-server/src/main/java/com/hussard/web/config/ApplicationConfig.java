@@ -2,6 +2,7 @@ package com.hussard.web.config;
 
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
@@ -32,5 +33,13 @@ public class ApplicationConfig {
         localeResolver.setCookieName("lang");
         localeResolver.setCookieMaxAge(86400);
         return localeResolver;
+    }
+
+    @Bean
+    public ReloadableResourceBundleMessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasenames("classpath:messages/bbs");
+        messageSource.setUseCodeAsDefaultMessage(true);
+        return messageSource;
     }
 }

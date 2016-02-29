@@ -1,36 +1,47 @@
 package com.hussard.web.base.bbs.domain;
 
 
+import com.hussard.web.base.domain.DefaultColumns;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
-public class Config {
+@Entity
+public class Config implements Serializable{
 
-    private int bbsId;
+    private static final long serialVersionUID = -5980349850197237283L;
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private int id;
     @NotNull
     @Size(min=1, max=20)
     private String bbsName;
     private String bbsDesc;
     @NotNull
-    private Integer perPage;
-    private String replyYn;
+    private int perPage;
+    private int replyYn;
     private int readAuth;
     private int writeAuth;
     private int replyWriteAuth;
-    private String useYn;
-    private String regiId;
-    private Date regiDtime;
-    private String modiId;
-    private Date modiDtime;
 
+    @Embedded
+    private DefaultColumns defaultColumns;
 
-    public int getBbsId() {
-        return bbsId;
+    public Config() {
+        this.defaultColumns = new DefaultColumns();
     }
 
-    public void setBbsId(int bbsId) {
-        this.bbsId = bbsId;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getBbsName() {
@@ -41,19 +52,19 @@ public class Config {
         this.bbsName = bbsName;
     }
 
-    public Integer getPerPage() {
+    public int getPerPage() {
         return perPage;
     }
 
-    public void setPerPage(Integer perPage) {
+    public void setPerPage(int perPage) {
         this.perPage = perPage;
     }
 
-    public String getReplyYn() {
+    public int getReplyYn() {
         return replyYn;
     }
 
-    public void setReplyYn(String replyYn) {
+    public void setReplyYn(int replyYn) {
         this.replyYn = replyYn;
     }
 
@@ -82,52 +93,19 @@ public class Config {
         this.replyWriteAuth = replyWriteAuth;
     }
 
-    public String getUseYn() {
-        return useYn;
-    }
-
-    public void setUseYn(String useYn) {
-        this.useYn = useYn;
-    }
-
-    public String getRegiId() {
-        return regiId;
-    }
-
-    public void setRegiId(String regiId) {
-        this.regiId = regiId;
-    }
-
-    public Date getRegiDtime() {
-        return regiDtime;
-    }
-
-    public void setRegiDtime(Date regiDtime) {
-        this.regiDtime = regiDtime;
-    }
-
-    public String getModiId() {
-        return modiId;
-    }
-
-    public void setModiId(String modiId) {
-        this.modiId = modiId;
-    }
-
-    public Date getModiDtime() {
-        return modiDtime;
-    }
-
-    public void setModiDtime(Date modiDtime) {
-        this.modiDtime = modiDtime;
-    }
-
-
     public String getBbsDesc() {
         return bbsDesc;
     }
 
     public void setBbsDesc(String bbsDesc) {
         this.bbsDesc = bbsDesc;
+    }
+
+    public DefaultColumns getDefaultColumns() {
+        return defaultColumns;
+    }
+
+    public void setDefaultColumns(DefaultColumns defaultColumns) {
+        this.defaultColumns = defaultColumns;
     }
 }

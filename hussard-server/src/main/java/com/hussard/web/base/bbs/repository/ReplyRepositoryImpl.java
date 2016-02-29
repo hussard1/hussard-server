@@ -1,35 +1,49 @@
 package com.hussard.web.base.bbs.repository;
 
 import com.hussard.web.base.bbs.domain.Reply;
-import org.apache.ibatis.session.SqlSession;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
- * Created by user on 2015-07-13.
+ * Created by user on 2016-02-17.
  */
 @Repository
 public class ReplyRepositoryImpl implements ReplyRepository {
 
-    final static String namespace = "com.hussard.web.base.bbs.repository.ReplyMapper";
-
     @Autowired
-    private SqlSession sqlSession;
+    private SessionFactory sessionFactory;
 
     @Override
+    @Transactional
     public void saveReply(Reply reply) {
-        sqlSession.insert(namespace + ".saveReply", reply);
+        Session session = sessionFactory.getCurrentSession();
+        session.save(reply);
     }
 
     @Override
+    @Transactional
+    @SuppressWarnings("unchecked")
     public List<Reply> findReplyList(int contentId) {
-        return sqlSession.selectList(namespace + ".findReplyList", contentId);
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(Reply.class);
+        criteria.add(Restrictions.eq("content.id", contentId));
+        return criteria.list();
     }
 
     @Override
+    @Transactional
     public void deleteReply(Reply replyId) {
-        sqlSession.update(namespace + ".deleteReply", replyId);
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(Reply.class);
+        Reply reply= (Reply) criteria.add(Restrictions.eq("id", replyId)).uniqueResult();
+        reply.getDefaultColumns().setUseYn(false);
+        session.save(reply);
     }
 }

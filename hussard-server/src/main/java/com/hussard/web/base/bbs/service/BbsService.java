@@ -14,19 +14,17 @@ public interface BbsService {
 
     Config findConfigByBbsId(int bbsId);
 
-    List<Content> findList(int bbsId, int pageNum, int searchMode, String searchContent, int perPage);
+    List<Content> findContentList(int bbsId, int pageNum, int perPage, int searchMode, String searchContent);
 
-    Map<String, Object> caculatePaging(int pageNum, int perPage, int totalContentCnt);
-
-    int findCountByBbsId(int bbsId, int searchMode, String searchContent);
+    long findContentCount(int bbsId, int searchMode, String searchContent);
 
     void saveContent(Content content);
 
-    Content findContentByContentId(int contentId);
+    Content findContentById(int contentId);
 
     void updateContent(Content content);
 
-    void updateViewCnt(int contentId);
+    void updateViewCnt(Content content);
 
     void deleteContent(int contentId, String userid);
 
@@ -49,4 +47,6 @@ public interface BbsService {
     List<Content> getBbsEventThumnailList();
 
     boolean validReplyWriteAuth(int bbsId);
+
+
 }

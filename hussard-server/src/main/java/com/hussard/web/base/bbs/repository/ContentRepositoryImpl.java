@@ -1,81 +1,90 @@
 package com.hussard.web.base.bbs.repository;
 
+import com.hussard.web.base.bbs.domain.Config;
 import com.hussard.web.base.bbs.domain.Content;
-import org.apache.ibatis.session.SqlSession;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Created by user on 2015-07-13.
+ * Created by user on 2016-02-16.
  */
 @Repository
 public class ContentRepositoryImpl implements ContentRepository {
 
-    final static String namespace = "com.hussard.web.base.bbs.repository.ContentMapper";
-
     @Autowired
-    private SqlSession sqlSession;
+    private SessionFactory sessionFactory;
 
     @Override
-    public List<Content> findListBySearchMode(int bbsId, int pageNum, int searchMode, String searchContent, int perPage) {
-
-        Map<String, Object> parameterMap = new HashMap<>();
-        parameterMap.put("bbsId", bbsId);
-        parameterMap.put("searchMode", searchMode);
-        parameterMap.put("searchContent", searchContent);
-        parameterMap.put("fromLimit", ((pageNum-1)*perPage));
-        parameterMap.put("perPage", perPage);
-
-        return sqlSession.selectList(namespace + ".findListBySearchMode", parameterMap);
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<Content> findContentList(int bbsId, int pageNum, int perPage, int searchMode, String searchContent) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(Content.class);
+        criteria.add(Restrictions.eq("bbsId", bbsId));
+        criteria.addOrder(Order.desc("id"));
+        criteria.setFirstResult((pageNum-1)* perPage);
+        criteria.setMaxResults(perPage);
+        return criteria.list();
     }
 
     @Override
-    public int findCountByBbsId(int bbsId, int searchMode, String searchContent) {
-
-        Map<String, Object> parameterMap = new HashMap<>();
-        parameterMap.put("bbsId", bbsId);
-        parameterMap.put("searchMode", searchMode);
-        parameterMap.put("searchContent", searchContent);
-
-        return sqlSession.selectOne(namespace + ".findCountByBbsId", parameterMap);
+    @Transactional
+    public long findContentCount(int bbsId, int searchMode, String searchContent) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(Content.class);
+//        criteria.add(Restrictions.eq("id", bbsId));
+        return (long)criteria.setProjection(Projections.rowCount()).uniqueResult();
     }
 
     @Override
+    @Transactional
     public void saveContent(Content content) {
-        sqlSession.insert(namespace + ".saveContent", content);
+        Session session = sessionFactory.getCurrentSession();
+        session.save(content);
     }
 
     @Override
-    public Content findContentByContentId(int contentId) {
-        return sqlSession.selectOne(namespace + ".findContentByContentId", contentId);
+    @Transactional
+    public Content findContentById(int contentId) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(Content.class);
+        criteria.add(Restrictions.eq("id", contentId));
+
+        return (Content) criteria.uniqueResult();
     }
 
     @Override
+    @Transactional
     public void updateContent(Content content) {
-        sqlSession.update(namespace + ".updateContent", content);
+        Session session = sessionFactory.getCurrentSession();
+        session.update(content);
     }
 
     @Override
-    public void updateViewCnt(int contentId) {
-        sqlSession.update(namespace + ".updateViewCnt", contentId);
-    }
-
-    @Override
+    @Transactional
     public void deleteContent(int contentId, String userid) {
+        Session session = sessionFactory.getCurrentSession();
 
-        Map<String, Object> parameterMap = new HashMap<>();
-        parameterMap.put("contentId", contentId);
-        parameterMap.put("userId", userid);
-
-        sqlSession.update(namespace + ".deleteContent", parameterMap);
+        Criteria criteria = session.createCriteria(Content.class);
+        Content content = (Content) criteria.add(Restrictions.eq("id", contentId)).uniqueResult();
+        content.getDefaultColumns().setModifier(userid);
+        content.getDefaultColumns().setUseYn(false);
+        session.update(content);
     }
 
     @Override
+    @Transactional
     public List<Content> getBbsNoticeThumnailList(int bbsId) {
-        return sqlSession.selectList(namespace + ".getBbsNoticeThumnailList" , bbsId);
+        return null;
     }
 }
