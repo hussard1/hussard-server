@@ -28,15 +28,15 @@
 					<div class="notice_list common_border">
 						<div class="detail_header common_header">
 							<div class="th_detail_title"><c:out value="${content.contentSubject}"/></div>
-							<div class="th_detail_author">${content.regiId}</div>
-							<div class="th_detail_date"><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${content.regiDtime}"/></div>
+							<div class="th_detail_author">${content.defaultColumns.registrant}</div>
+							<div class="th_detail_date"><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${content.defaultColumns.registrationDate}"/></div>
 							<div class="th_detail_count"><spring:message code="lbl.bbs.detail.viewCnt"/>${content.contentViewCnt}</div>
 						</div>
-						<c:if test="${not empty files}">
+						<c:if test="${not empty bbsFile}">
 							<div class="th_upload">
-							<c:forEach var="file" items="${files}">
-								<div class="th_upload_item"><a href="<c:url value="/bbs/bbs/filedownload.sag">
-									<c:param name="contentid" value="${file.contentId}"/>
+							<c:forEach var="file" items="${bbsFile}">
+								<div class="th_upload_item"><a href="<c:url value="/bbs/bbs/filedownload">
+									<c:param name="contentId" value="${file.contentId}"/>
 									<c:param name="fileid" value="${file.fileId}"/>
 									<c:param name="filename" value="${file.fileOriName}"/>
 								</c:url>">
@@ -54,17 +54,17 @@
 							<c:out value="${content.contentDetails}" escapeXml="false" />
 						</div>
 					</div>
-					<c:if test="${not empty reply}">
-					<div class="reply_titile"><spring:message code="lbl.bbs.detail.reply"/><span class="reply_number"> (<c:out value="${replyCnt}"/>)</span></div>
+					<c:if test="${not empty content.reply}">
+					<div class="reply_titile"><spring:message code="lbl.bbs.detail.reply"/><span class="reply_number"> (<c:out value="${content.replyCnt}"/>)</span></div>
 					<div class="notice_list common_border">
-						<c:forEach var="item" items="${replys}">
+						<c:forEach var="item" items="${content.reply}">
 						<div class="common_reply_wrap" id="replys">
 							<div class="reply_info_wrap">
-								<form:form method="post" action="deletereply.sag" commandName="reply">
+								<form:form method="post" action="deletereply" commandName="reply">
 								<div class="reply_owner_icon"></div><span class="reply_username"><c:out value="${item.regiId}"/> </span>
 								<span class="reply_date"><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${item.regiDtime}"/>
 										<form:button class="reply_del_btn"/></span>
-										<input type="hidden" name="bbsid" value="${bbsId}"/>
+										<input type="hidden" name="bbsId" value="${config.id}"/>
 										<form:hidden path="replyId" value="${item.replyId}"/>
 										<form:hidden path="contentId" value="${content.contentId}"/>
 								</div>
@@ -74,38 +74,43 @@
 							</div>
 						</div>
 						</c:forEach>
-						<div class="common_reply_wrap reply_input_wrap">
-							<form:form method="post" action="addreply.sag" commandName="reply" id="reply_add_form">
-							<div class="reply_owner_icon"></div><span class="reply_username">김시용님</span>
-							<div class="reply_text_info"><span class="inputCnt">0</span>/300</div>
-							<div class="reply_text_input">
-								<form:textarea path="replyDetails" />
-								<div class="write_reply_content">
-									<div class="write_check_icon" ></div>
-									<span><a href="#" id="reply_add_btn"><spring:message code="btn.bbs.detail.writeBtn"/></a></span>
-								</div>
-							</div>
-							<input type="hidden" name="bbsid" value="${bbsId}"/>
-							<form:hidden path="contentId" value="${content.contentId}"/>
-							<form:errors path="replyDetails"/>
-							</form:form>
-						</div>
 					</div>
 					</c:if>
+						<c:if test="${config.replyYn == 1}">
+						<div class="notice_list common_border">
+							<div class="common_reply_wrap reply_input_wrap">
+								<form:form method="post" action="addreply" commandName="reply" id="reply_add_form">
+								<div class="reply_owner_icon"></div><span class="reply_username">김시용님</span>
+								<div class="reply_text_info"><span class="inputCnt">0</span>/300</div>
+								<div class="reply_text_input">
+									<form:textarea path="replyDetails"/>
+									<div class="write_reply_content">
+										<div class="write_check_icon" ></div>
+										<span><a href="#" id="reply_add_btn"><spring:message code="btn.bbs.detail.writeBtn"/></a></span>
+									</div>
+								</div>
+								<input type="hidden" name="bbsId" value="${config.id}"/>
+								<form:hidden path="contentId" value="${content.id}"/>
+								<form:errors path="replyDetails"/>
+								</form:form>
+							</div>
+						</div>
+					</c:if>
+
 					<div class="button_wrap">
-						<c:if test="${'test' == content.regiId }">
-							<button class="button_wrap_update"><a href="<c:url value='/bbs/bbs/updateform.sag'>
-											<c:param name="bbsid" value="${bbsId}"/>
-											<c:param name="contentid" value="${content.contentId}"/>
+						<c:if test="${'system' == content.defaultColumns.registrant }">
+							<button class="button_wrap_update"><a href="<c:url value='/bbs/bbs/updateform'>
+											<c:param name="bbsId" value="${config.id}"/>
+											<c:param name="contentId" value="${content.id}"/>
 									</c:url>"><spring:message code="btn.bbs.detail.updateBtn"/></a></button>
 
-							<button class="button_wrap_delete"><a href="<c:url value='/bbs/bbs/delete.sag'>
-											<c:param name="bbsid" value="${bbsId}"/>
-											<c:param name="contentid" value="${content.contentId}"/>
+							<button class="button_wrap_delete"><a href="<c:url value='/bbs/bbs/delete'>
+											<c:param name="bbsId" value="${config.id}"/>
+											<c:param name="contentId" value="${content.id}"/>
 									</c:url>"><spring:message code="btn.bbs.detail.deleteBtn"/></a></button>
 						</c:if>
-						<a href="<c:url value='/bbs/bbs/list.sag'>
-											<c:param name="bbsid" value="${bbsId}"/>
+						<a href="<c:url value='/bbs/bbs/list'>
+											<c:param name="bbsId" value="${config.id}"/>
 											<c:param name="pagenum" value="1"/>
 									</c:url>"><button class="button_wrap_list gray_42_button"><spring:message code="btn.bbs.detail.listBtn"/></button></a>
 					</div>

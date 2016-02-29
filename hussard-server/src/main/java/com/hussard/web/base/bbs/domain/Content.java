@@ -1,12 +1,16 @@
 package com.hussard.web.base.bbs.domain;
 
 import com.hussard.web.base.domain.DefaultColumns;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,19 +48,24 @@ public class Content {
     private String replyCnt;
     @Column(name="file_cnt")
     private String fileCnt;
+    @Transient
     private MultipartFile fileUpload[];
+    @Transient
     private Integer fileDelId[];
-    @ManyToOne
-    private Config config;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "content_id")
     private Set<Reply> reply;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
+    @Cascade(CascadeType.ALL)
     @JoinColumn(name = "content_id")
-    private Set<BbsFile> bbsFile;
+    private List<BbsFile> bbsFile;
 
     @Embedded
     private DefaultColumns defaultColumns;
+
+    public Content() {
+        this.defaultColumns = new DefaultColumns();
+    }
 
     public int getId() {
         return id;
@@ -187,14 +196,6 @@ public class Content {
         this.fileCnt = fileCnt;
     }
 
-    public Config getConfig() {
-        return config;
-    }
-
-    public void setConfig(Config config) {
-        this.config = config;
-    }
-
     public Set<Reply> getReply() {
         return reply;
     }
@@ -203,11 +204,11 @@ public class Content {
         this.reply = reply;
     }
 
-    public Set<BbsFile> getBbsFile() {
+    public List<BbsFile> getBbsFile() {
         return bbsFile;
     }
 
-    public void setBbsFile(Set<BbsFile> bbsFile) {
+    public void setBbsFile(List<BbsFile> bbsFile) {
         this.bbsFile = bbsFile;
     }
 

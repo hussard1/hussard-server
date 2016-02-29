@@ -58,8 +58,8 @@ public class BbsApiController {
                                            ModelMap model, HttpServletResponse response) {
 
         Config config =  bbsService.findConfigByBbsId(bbsId);
-        List<Content> contents = bbsService.findList(bbsId, page, searchMode, searchContent, config.getPerPage());
-        long totalContentCnt = bbsService.findCountByBbsId(bbsId, searchMode, searchContent);
+        List<Content> contents = bbsService.findContentList(bbsId, page, config.getPerPage(), searchMode, searchContent);
+        long totalContentCnt = bbsService.findContentCount(bbsId, searchMode, searchContent);
         PageNation pageNation = new PageNation(page, config.getPerPage(), totalContentCnt);
 
         Map <String, Object> map = new HashMap<>();
@@ -71,6 +71,7 @@ public class BbsApiController {
         map.put("pageNation", pageNation);
         map.put("searchContent", searchContent);
         map.put("searchMode", searchMode);
+        response.setHeader("Access-Control-Allow-Origin", "*");
         return map;
     }
 
@@ -109,9 +110,9 @@ public class BbsApiController {
         if (bbsService.validWriteAuth(bbsId)) {
             model.addAttribute("writeAuth", "true");
         }
+        Content content = bbsService.findContentById(contentId);
+        bbsService.updateViewCnt(content);
 
-        bbsService.updateViewCnt(contentId);
-        Content content = bbsService.findContentByContentId(contentId);
 
 //        if(bbsService.validReply(bbsId)) {
 //            List<Reply> replys = replyService.findReplyList(contentId);
@@ -147,7 +148,7 @@ public class BbsApiController {
         }
 
         Config config =  bbsService.findConfigByBbsId(bbsId);
-        Content content = bbsService.findContentByContentId(contentId);
+        Content content = bbsService.findContentById(contentId);
         List<BbsFile> bbsFiles = fileService.findFileByContentId(contentId);
 
         model.addAttribute("bbsName", config.getBbsName());
@@ -178,7 +179,7 @@ public class BbsApiController {
         content.getDefaultColumns().setModifier(userid);
 
         if(content.getFileDelId() != null) {
-            fileService.deleteFile(content, userid);
+            fileService.deleteFile(content);
         }
         bbsService.updateContent(content);
         fileService.saveFile(content, content.getFileUpload());
@@ -206,7 +207,7 @@ public class BbsApiController {
         String userid = "admin";
 
         if (result.hasErrors()) {
-            Content content = bbsService.findContentByContentId(reply.getContentId());
+            Content content = bbsService.findContentById(reply.getContentId());
             List<BbsFile> bbsFiles = fileService.findFileByContentId(reply.getContentId());
             model.addAttribute("bbsId", bbsId);
             model.addAttribute("content", content);

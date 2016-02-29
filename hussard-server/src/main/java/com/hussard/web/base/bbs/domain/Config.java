@@ -23,17 +23,18 @@ public class Config implements Serializable{
     private String bbsName;
     private String bbsDesc;
     @NotNull
-    private Integer perPage;
-    private String replyYn;
+    private int perPage;
+    private int replyYn;
     private int readAuth;
     private int writeAuth;
     private int replyWriteAuth;
 
-    @OneToMany(mappedBy = "config")
-    private Set<Content> content;
-
     @Embedded
     private DefaultColumns defaultColumns;
+
+    public Config() {
+        this.defaultColumns = new DefaultColumns();
+    }
 
     public int getId() {
         return id;
@@ -51,19 +52,19 @@ public class Config implements Serializable{
         this.bbsName = bbsName;
     }
 
-    public Integer getPerPage() {
+    public int getPerPage() {
         return perPage;
     }
 
-    public void setPerPage(Integer perPage) {
+    public void setPerPage(int perPage) {
         this.perPage = perPage;
     }
 
-    public String getReplyYn() {
+    public int getReplyYn() {
         return replyYn;
     }
 
-    public void setReplyYn(String replyYn) {
+    public void setReplyYn(int replyYn) {
         this.replyYn = replyYn;
     }
 
@@ -98,14 +99,6 @@ public class Config implements Serializable{
 
     public void setBbsDesc(String bbsDesc) {
         this.bbsDesc = bbsDesc;
-    }
-
-    public Set<Content> getContent() {
-        return content;
-    }
-
-    public void setContent(Set<Content> content) {
-        this.content = content;
     }
 
     public DefaultColumns getDefaultColumns() {

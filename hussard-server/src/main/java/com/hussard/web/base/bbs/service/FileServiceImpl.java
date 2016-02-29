@@ -105,7 +105,11 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void deleteFile(Content content, String userId) {
+    public void deleteFile(Content content) {
+
+        // TODO : change
+        String userId = "system";
+
         fileMapper.deleteFile(content, userId);
     }
 

@@ -9,17 +9,15 @@ import java.util.List;
  */
 public interface ContentRepository {
 
-    List<Content> findListBySearchMode(int bbsId, int pageNum, int perPage, int searchMode, String searchContent);
+    List<Content> findContentList(int bbsId, int pageNum, int perPage, int searchMode, String searchContent);
 
-    long findCountByBbsId(int bbsId, int searchMode, String searchContent);
+    long findContentCount(int bbsId, int searchMode, String searchContent);
 
     void saveContent(Content content);
 
-    Content findContentByContentId(int contentId);
+    Content findContentById(int contentId);
 
     void updateContent(Content content);
-
-    void updateViewCnt(int contentId);
 
     void deleteContent(int contentId, String userid);
 

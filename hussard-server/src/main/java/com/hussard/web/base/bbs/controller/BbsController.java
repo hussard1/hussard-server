@@ -51,21 +51,19 @@ public class BbsController {
     private FileSizeValidator fileSizeValidator;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public String bbsList(@RequestParam(value = "bbsid", defaultValue= "1") int bbsId, @RequestParam(value="page", defaultValue = "1") int page,
+    public String bbsList(@RequestParam(value = "bbsId", defaultValue= "1") int bbsId, @RequestParam(value="page", defaultValue = "1") int page,
                                        @RequestParam(value = "searchMode", required = false, defaultValue = "0") int searchMode,
                                        @RequestParam(value = "searchContent", required = false) String searchContent,
                                        Model model) {
 
         Config config =  bbsService.findConfigByBbsId(bbsId);
-        long totalContentCnt = bbsService.findCountByBbsId(bbsId, searchMode, searchContent);
+        long totalContentCnt = bbsService.findContentCount(bbsId, searchMode, searchContent);
 
         PageNation pageNation = new PageNation(page, config.getPerPage(), totalContentCnt);
 
-        List<Content> contents = bbsService.findList(bbsId, page, config.getPerPage(), searchMode, searchContent);
+        List<Content> contents = bbsService.findContentList(bbsId, page, config.getPerPage(), searchMode, searchContent);
 
-        model.addAttribute("bbsId", bbsId);
-        model.addAttribute("bbsName", config.getBbsName());
-        model.addAttribute("bbsDesc", config.getBbsDesc());
+        model.addAttribute("config", config);
         model.addAttribute("contents", contents);
         model.addAttribute("pageNation", pageNation);
         model.addAttribute("searchMode", searchMode);
@@ -75,45 +73,16 @@ public class BbsController {
     }
 
 
-    @RequestMapping(value = "/getlist", method = RequestMethod.GET)
-    @ResponseBody
-    public Map<String, Object> ajaxBbsList(@RequestParam(value = "bbsid", defaultValue= "1") int bbsId, @RequestParam(value="page", defaultValue = "1") int page,
-                              @RequestParam(value = "searchMode", required = false, defaultValue = "0") int searchMode,
-                              @RequestParam(value = "searchContent", required = false) String searchContent,
-                              ModelMap model, HttpServletResponse response) {
-
-        Config config =  bbsService.findConfigByBbsId(bbsId);
-
-        long totalContentCnt = bbsService.findCountByBbsId(bbsId, searchMode, searchContent);
-        PageNation pageNation = new PageNation(page, config.getPerPage(), totalContentCnt);
-
-        List<Content> contents = bbsService.findList(bbsId, page, config.getPerPage(), searchMode, searchContent);
-
-        Map <String, Object> map = new HashMap<>();
-
-        map.put("bbsId", bbsId);
-        map.put("bbsName", config.getBbsName());
-        map.put("bbsDesc", config.getBbsDesc());
-        map.put("contents", contents);
-        map.put("pageNation", pageNation);
-        map.put("searchContent", searchContent);
-        map.put("searchMode", searchMode);
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        return map;
-    }
-
     @RequestMapping(value = "/writeform", method = RequestMethod.GET)
-    public String showForm(@RequestParam("bbsid" ) int bbsId, Model model) {
+    public String showForm(@RequestParam("bbsId" ) int bbsId, Model model) {
 
         Config config =  bbsService.findConfigByBbsId(bbsId);
         Content content = new Content();
         content.setBbsId(bbsId);
-        model.addAttribute("bbsName", config.getBbsName());
-        model.addAttribute("bbsDesc", config.getBbsDesc());
+        model.addAttribute("config", config);
         model.addAttribute("content", content);
-        model.addAttribute("bbsId", bbsId);
 
-        return "bbs/bbs/writeform";
+        return "bbs/writeform";
     }
 
     @RequestMapping(value = "/writeform", method = RequestMethod.POST)
@@ -125,123 +94,82 @@ public class BbsController {
         if (result.hasErrors()) {
             model.addAttribute("bbsId", content.getBbsId());
             model.addAttribute("content", content);
-            return "bbs/bbs/writeform";
+            return "bbs/writeform";
         }
 
         content.setRegiIpAddress(request.getRemoteAddr());
-//        content.setRegiId(userId);
 
         bbsService.saveContent(content);
         fileService.saveFile(content, content.getFileUpload());
 
-        return "redirect:/bbs/bbs/list?bbsid=" + content.getBbsId() + "&pagenum=1";
+        return "redirect:/bbs/bbs/list?bbsId=" + content.getBbsId() + "&pagenum=1";
     }
 
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
-    public String showBbsDetail(@RequestParam("bbsid") int bbsId,
+    public String showBbsDetail(@RequestParam("bbsId") int bbsId,
                                 @RequestParam("contentid") int contentId, Model model) {
 
-        if (bbsService.validWriteAuth(bbsId)) {
-            model.addAttribute("writeAuth", "true");
-        }
-
-        bbsService.updateViewCnt(contentId);
-        Content content = bbsService.findContentByContentId(contentId);
-
-//        if(bbsService.validReply(bbsId)) {
-//            List<Reply> replys = replyService.findReplyList(contentId);
-//            if(bbsService.validReplyWriteAuth(bbsId)){
-//                model.addAttribute("replyWriteAuth", "true");
-//            }
-//            Reply reply = new Reply();
-//            model.addAttribute("reply", reply);
-//            model.addAttribute("replys", replys);
-//            model.addAttribute("replyCnt", replys.size());
-//        }
-
-        String userId = "test";
-
+        Content content = bbsService.findContentById(contentId);
+        bbsService.updateViewCnt(content);
         Config config =  bbsService.findConfigByBbsId(bbsId);
-        List<BbsFile> bbsFiles = fileService.findFileByContentId(contentId);
-        model.addAttribute("userId", userId);
-        model.addAttribute("bbsId", bbsId);
-        model.addAttribute("bbsName", config.getBbsName());
-        model.addAttribute("bbsDesc", config.getBbsDesc());
-        model.addAttribute("content", content);
-        model.addAttribute("files", bbsFiles);
 
-        return "bbs/bbs/detail";
+        model.addAttribute("config", config);
+        model.addAttribute("content", content);
+        model.addAttribute("reply", new Reply());
+
+
+        return "bbs/detail";
     }
 
     @RequestMapping(value = "/updateform", method = RequestMethod.GET)
-    public String showUpdateForm(@RequestParam("bbsid") int bbsId, @RequestParam("contentid") int contentId, Model model) {
-
-        String userid = "admin";
-
-        if (!bbsService.validWriteAuth(bbsId)) {
-        }
+    public String showUpdateForm(@RequestParam("bbsId") int bbsId, @RequestParam("contentId") int contentId, Model model) {
 
         Config config =  bbsService.findConfigByBbsId(bbsId);
-        Content content = bbsService.findContentByContentId(contentId);
-        List<BbsFile> bbsFiles = fileService.findFileByContentId(contentId);
+        Content content = bbsService.findContentById(contentId);
 
-        model.addAttribute("bbsName", config.getBbsName());
-        model.addAttribute("bbsDesc", config.getBbsDesc());
-        model.addAttribute("bbsId", bbsId);
-        model.addAttribute("contentId", contentId);
+        model.addAttribute("config", config);
         model.addAttribute("content", content);
-        model.addAttribute("files", bbsFiles);
 
-        return "bbs/bbs/updateform";
+        return "bbs/updateform";
     }
 
     @RequestMapping(value = "/updateform", method = RequestMethod.POST)
     public String processUpdateForm(@Valid Content content, BindingResult result,
                                     Model model){
 
-        String userid = "admin";
-
         fileSizeValidator.validate(content, result);
         if (result.hasErrors()) {
             model.addAttribute("bbsId", content.getBbsId());
             model.addAttribute("contentId", content.getId());
-            return "bbs/bbs/updateform";
+            return "bbs/updateform";
         }
 
-        //자신의 글이 맞는지 확인
-//        bbsService.validOwn(num, request){}
-        content.getDefaultColumns().setModifier(userid);
-
         if(content.getFileDelId() != null) {
-            fileService.deleteFile(content, userid);
+            fileService.deleteFile(content);
         }
         bbsService.updateContent(content);
         fileService.saveFile(content, content.getFileUpload());
 
-        return "redirect:/bbs/bbs/detail?bbsid=" + content.getBbsId() + "&contentid=" + content.getId();
+        return "redirect:/bbs/bbs/detail?bbsId=" + content.getBbsId() + "&contentid=" + content.getId();
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
-    public String delete(@RequestParam("bbsid") int bbsId, @RequestParam("contentid") int contentId, Model model) {
-
+    public String delete(@RequestParam("bbsId") int bbsId, @RequestParam("contentId") int contentId, Model model) {
 
         String userid = "admin";
 
-        //자신의 글이 맞는지 확인
-//            bbsService.validOwn(num, request);
-
         bbsService.deleteContent(contentId, userid);
 
-        return "redirect:/bbs/bbs/list?bbsid=" + bbsId + "&pagenum=1";
+        return "redirect:/bbs/bbs/list?bbsId=" + bbsId + "&pagenum=1";
     }
 
     @RequestMapping(value = "/addreply", method = RequestMethod.POST)
-    public String addReply(@RequestParam("bbsid") int bbsId, @Valid Reply reply, BindingResult result, Model model, HttpServletRequest request) {
+    public String addReply(@RequestParam("bbsId") int bbsId, @Valid Reply reply, BindingResult result, Model model, HttpServletRequest request) {
 
         String userid = "admin";
 
         if (result.hasErrors()) {
-            Content content = bbsService.findContentByContentId(reply.getContentId());
+            Content content = bbsService.findContentById(reply.getContentId());
             List<BbsFile> bbsFiles = fileService.findFileByContentId(reply.getContentId());
             model.addAttribute("bbsId", bbsId);
             model.addAttribute("content", content);
@@ -250,7 +178,7 @@ public class BbsController {
             model.addAttribute("reply", reply);
             model.addAttribute("replys", replys);
             model.addAttribute("replyCnt", replys.size());
-            return "bbs/bbs/detail";
+            return "bbs/detail";
         }
 
         reply.setRegiIpAddress(request.getRemoteAddr());
@@ -258,12 +186,12 @@ public class BbsController {
 
         replyService.saveReply(reply);
 
-        return "redirect:/bbs/bbs/detail.sag?bbsid="+bbsId+"&contentid="+reply.getContentId();
+        return "redirect:/bbs/bbs/detail?bbsId="+bbsId+"&contentid="+reply.getContentId();
     }
 
 
     @RequestMapping(value = "/deletereply", method = RequestMethod.POST)
-    public String removeReply(@RequestParam("bbsid") int bbsId, @Valid Reply reply, BindingResult result, Model model) {
+    public String removeReply(@RequestParam("bbsId") int bbsId, @Valid Reply reply, BindingResult result, Model model) {
 
         //replyService.validOwn(rnum, request);
 
@@ -274,7 +202,7 @@ public class BbsController {
         replyService.deleteReply(reply);
 
 
-        return  "redirect:/bbs/bbs/detail?bbsid="+bbsId+"&contentid="+reply.getContentId();
+        return  "redirect:/bbs/bbs/detail?bbsId="+bbsId+"&contentid="+reply.getContentId();
     }
 
     @RequestMapping(value = "/filedownload", method = RequestMethod.GET)
@@ -307,6 +235,6 @@ public class BbsController {
         model.addAttribute("CKEditorFuncNum", CKEditorFuncNum);
         response.setHeader("X-Frame-Options", "SAMEORGIN");
 
-        return "bbs/bbs/imageupload";
+        return "bbs/imageupload";
     }
 }

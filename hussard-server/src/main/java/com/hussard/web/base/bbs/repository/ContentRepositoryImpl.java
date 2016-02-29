@@ -1,9 +1,11 @@
 package com.hussard.web.base.bbs.repository;
 
+import com.hussard.web.base.bbs.domain.Config;
 import com.hussard.web.base.bbs.domain.Content;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -24,17 +26,23 @@ public class ContentRepositoryImpl implements ContentRepository {
 
     @Override
     @Transactional
-    public List<Content> findListBySearchMode(int bbsId, int pageNum, int perPage, int searchMode, String searchContent) {
-        return null;
+    @SuppressWarnings("unchecked")
+    public List<Content> findContentList(int bbsId, int pageNum, int perPage, int searchMode, String searchContent) {
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(Content.class);
+        criteria.add(Restrictions.eq("bbsId", bbsId));
+        criteria.addOrder(Order.desc("id"));
+        criteria.setFirstResult((pageNum-1)* perPage);
+        criteria.setMaxResults(perPage);
+        return criteria.list();
     }
 
     @Override
     @Transactional
-    public long findCountByBbsId(int bbsId, int searchMode, String searchContent) {
+    public long findContentCount(int bbsId, int searchMode, String searchContent) {
         Session session = sessionFactory.getCurrentSession();
-
         Criteria criteria = session.createCriteria(Content.class);
-
+//        criteria.add(Restrictions.eq("id", bbsId));
         return (long)criteria.setProjection(Projections.rowCount()).uniqueResult();
     }
 
@@ -47,7 +55,7 @@ public class ContentRepositoryImpl implements ContentRepository {
 
     @Override
     @Transactional
-    public Content findContentByContentId(int contentId) {
+    public Content findContentById(int contentId) {
         Session session = sessionFactory.getCurrentSession();
         Criteria criteria = session.createCriteria(Content.class);
         criteria.add(Restrictions.eq("id", contentId));
@@ -60,16 +68,6 @@ public class ContentRepositoryImpl implements ContentRepository {
     public void updateContent(Content content) {
         Session session = sessionFactory.getCurrentSession();
         session.update(content);
-    }
-
-    @Override
-    @Transactional
-    public void updateViewCnt(int contentId) {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria criteria = session.createCriteria(Content.class);
-        Content content = (Content) criteria.add(Restrictions.eq("id", contentId)).uniqueResult();
-        content.setContentViewCnt(content.getContentViewCnt() + 1);
-        content.setContentViewCnt(contentId);
     }
 
     @Override

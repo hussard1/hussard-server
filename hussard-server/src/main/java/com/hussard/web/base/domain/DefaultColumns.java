@@ -18,6 +18,16 @@ public class DefaultColumns implements Serializable {
     private String dpModificationDate;
     private String dpRegistrationDate;
 
+    public DefaultColumns(){
+        this.useYn = true;
+        this.registrant = "system";
+        this.registrationDate = new Date();
+        this.modifier = "system";
+        this.modificationDate = new Date();
+    }
+
+
+
     public boolean isUseYn() {
         return useYn;
     }

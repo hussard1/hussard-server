@@ -15,15 +15,15 @@ pageEncoding="UTF-8"%>
 		<link rel="stylesheet" type="text/css" href="/static/css/bbs/buttons.css">
 		<link rel="stylesheet" type="text/css" href="/static/css/bbs/custom_select_box.css">
 		<script src="<c:url value="/static/js/jquery-1.7.1.min.js"/>"></script>
-		<title>	<c:out value="${bbsName}" /></title>
+		<title>	<c:out value="${config.bbsName}" /></title>
 	</head>
 	<body>
 		<main>
 			<div class="content_style">
 				<div class="h3_wrap">
-					<h3><c:out value="${bbsName}"/></h3>
+					<h3><c:out value="${config.bbsName}"/></h3>
 					<div class="input_wrap">
-						<form:form method="get" action="/bbs/bbs/list.sag" id="search_form">
+						<form:form method="get" action="/bbs/bbs/list" id="search_form">
 							<select name="searchMode" class="select_box input_hp_1">
 								<option value="1"><spring:message code="lbl.bbs.list.subject"/></option>
 								<option value="2"><spring:message code="lbl.bbs.list.content"/></option>
@@ -31,7 +31,7 @@ pageEncoding="UTF-8"%>
 							</select>
 						<input class="input_hp_2" id="content" name="searchContent" type="text">
 						<a href="#" id="search_button" class="gray_42_button"><spring:message code="btn.bbs.list.searchBtn"/></a>
-						<input type="hidden" name="bbsid" value="${bbsId}"/>
+						<input type="hidden" name="bbsId" value="${config.id}"/>
 						<input type="hidden" name="pagenum" value="1">
 						</form:form>
 					</div>
@@ -57,20 +57,20 @@ pageEncoding="UTF-8"%>
 											<div class="td_event"><spring:message code="lbl.bbs.list.event"/></div>
 										</c:when>
 										<c:otherwise>
-											<div class="td_number"><c:out value="${content.contentId}" /></div>
+											<div class="td_number"><c:out value="${content.id}" /></div>
 										</c:otherwise>
 									</c:choose>
-									<div class="td_title"><a href="<c:url value="/bbs/bbs/detail.sag">
-												<c:param name="bbsid" value="${content.bbsId}"/>
-												<c:param name="contentid" value="${content.contentId}"/>
+									<div class="td_title"><a href="<c:url value="/bbs/bbs/detail">
+												<c:param name="bbsId" value="${content.bbsId}"/>
+												<c:param name="contentid" value="${content.id}"/>
 											</c:url>">
 											<c:out value="${content.contentSubject}"/>
 											<c:if test="${not empty content.replyCnt}">
 											[<c:out value="${content.replyCnt}"/>]</c:if></a></div>
-									<div class="td_author"><c:out value="${content.regiId}" /></div>
+									<div class="td_author"><c:out value="${content.defaultColumns.registrant}" /></div>
 									<div class="td_date">
 										<fmt:formatDate pattern="yyyy-MM-dd HH:mm"
-														value="${content.regiDtime}" />
+														value="${content.defaultColumns.registrationDate}" />
 									</div>
 									<div class="td_count"><c:out value="${content.contentViewCnt}"/></div>
 								</li>
@@ -94,8 +94,8 @@ pageEncoding="UTF-8"%>
 								</c:when>
 								<c:otherwise>
 									<button class="sel common_bg_page pre_page">
-									<a href="<c:url value="/bbs/bbs/list.sag">
-											<c:param name="bbsid" value="${bbsId}"/>
+									<a href="<c:url value="/bbs/bbs/list">
+											<c:param name="bbsId" value="${bbsId}"/>
 											<c:param name="pagenum" value="${startpage-1}"/>
 											<c:param name="searchMode" value="${searchMode}"/>
 											<c:param name="searchContent" value="${searchContent}"/>
@@ -109,8 +109,8 @@ pageEncoding="UTF-8"%>
 										<button class="sel focus"><c:out value="${i}"/></button>
 									</c:when>
 									<c:otherwise>
-										<button class="sel"><a href="<c:url value="/bbs/bbs/list.sag">
-											<c:param name="bbsid" value="${bbsId}"/>
+										<button class="sel"><a href="<c:url value="/bbs/bbs/list">
+											<c:param name="bbsId" value="${bbsId}"/>
 											<c:param name="pagenum" value="${i}"/>
 											<c:param name="searchMode" value="${searchMode}"/>
 											<c:param name="searchContent" value="${searchContent}"/>
@@ -124,8 +124,8 @@ pageEncoding="UTF-8"%>
 									<button class="sel common_bg_page next_page">></button>
 								</c:when>
 								<c:otherwise>
-									<button class="sel common_bg_page next_page"><a href="<c:url value="/bbs/bbs/list.sag">
-											<c:param name="bbsid" value="${bbsId}"/>
+									<button class="sel common_bg_page next_page"><a href="<c:url value="/bbs/bbs/list">
+											<c:param name="bbsId" value="${bbsId}"/>
 											<c:param name="pagenum" value="${endpage+1}"/>
 											<c:param name="searchMode" value="${searchMode}"/>
 											<c:param name="searchContent" value="${searchContent}"/>
@@ -141,8 +141,8 @@ pageEncoding="UTF-8"%>
 								</c:when>
 								<c:otherwise>
 									<button class="sel common_bg_page pre_page">
-										<a href="<c:url value="/bbs/bbs/list.sag">
-											<c:param name="bbsid" value="${bbsId}"/>
+										<a href="<c:url value="/bbs/bbs/list">
+											<c:param name="bbsId" value="${bbsId}"/>
 											<c:param name="pagenum" value="${startpage-1}"/>
 											<c:param name="searchMode" value="${searchMode}"/>
 											<c:param name="searchContent" value="${searchContent}"/>
@@ -156,8 +156,8 @@ pageEncoding="UTF-8"%>
 										<button class="sel focus"><c:out value="${i}"/></button>
 									</c:when>
 									<c:otherwise>
-										<button class="sel"><a href="<c:url value="/bbs/bbs/list.sag">
-											<c:param name="bbsid" value="${bbsId}"/>
+										<button class="sel"><a href="<c:url value="/bbs/bbs/list">
+											<c:param name="bbsId" value="${bbsId}"/>
 											<c:param name="pagenum" value="${i}"/>
 											<c:param name="searchMode" value="${searchMode}"/>
 											<c:param name="searchContent" value="${searchContent}"/>
@@ -171,8 +171,8 @@ pageEncoding="UTF-8"%>
 									<button class="sel common_bg_page next_page">></button>
 								</c:when>
 								<c:otherwise>
-									<button class="sel common_bg_page next_page"><a href="<c:url value="/bbs/bbs/list.sag">
-											<c:param name="bbsid" value="${bbsId}"/>
+									<button class="sel common_bg_page next_page"><a href="<c:url value="/bbs/bbs/list">
+											<c:param name="bbsId" value="${bbsId}"/>
 											<c:param name="pagenum" value="${endpage+1}"/>
 											<c:param name="searchMode" value="${searchMode}"/>
 											<c:param name="searchContent" value="${searchContent}"/>
@@ -185,14 +185,11 @@ pageEncoding="UTF-8"%>
 					</div>
 					<div class="write_content">
 						<div class="write_content_icon"></div>
-						<span><a href="<c:url value="/bbs/bbs/writeform.sag">
-								<c:param name="bbsid" value="${bbsId}"/>
+						<span><a href="<c:url value="/bbs/bbs/writeform">
+								<c:param name="bbsId" value="${config.id}"/>
 								</c:url>"><spring:message code="btn.bbs.list.writeBtn"/></a></span>
 					</div>
 				</div>
-
-
-
 
 			</div>
 		</main>

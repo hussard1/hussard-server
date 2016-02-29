@@ -19,7 +19,7 @@ public class initController {
 
     @RequestMapping("")
     public String init(){
-        return "/view/settings/index";
+        return "/settings/index";
     }
 
 
@@ -31,7 +31,7 @@ public class initController {
         config.setBbsName("공지사항");
         config.setBbsDesc("공지사항 게시판 입니다.");
         config.setPerPage(10);
-        config.setReplyYn("Y");
+        config.setReplyYn(1);
         config.setReadAuth(1);
         config.setWriteAuth(1);
 
