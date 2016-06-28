@@ -35,6 +35,9 @@ public class User implements Serializable, UserDetails {
     private String fullname;
 
     @Column
+    private String email;
+
+    @Column
     @Enumerated(EnumType.STRING)
     private Language language;
 
@@ -156,5 +159,13 @@ public class User implements Serializable, UserDetails {
 
     public void setGroups(Set<Group> groups) {
         this.groups = groups;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

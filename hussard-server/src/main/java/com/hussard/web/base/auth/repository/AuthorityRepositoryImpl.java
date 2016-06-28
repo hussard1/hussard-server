@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Created by hussard on 2016. 6. 28..
  */
@@ -25,6 +27,13 @@ public class AuthorityRepositoryImpl implements AuthorityRepository {
         Authority authority = (Authority) session.createCriteria(Authority.class).add(Restrictions.eq("name", name)).uniqueResult();
 
         return authority;
+    }
+
+    @Override
+    @Transactional
+    public List<Authority> getAuthorities() {
+        Session session = sessionFactory.getCurrentSession();
+        return session.createCriteria(Authority.class).list();
     }
 
     @Override

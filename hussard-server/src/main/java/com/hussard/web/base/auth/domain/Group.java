@@ -12,7 +12,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "group")
-@Data
 public class Group {
 
     @Id
@@ -23,7 +22,41 @@ public class Group {
     @Column(name = "group_name")
     private String name;
 
+    @Column
+    private String desc;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Authority> authorities;
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
+    }
 }

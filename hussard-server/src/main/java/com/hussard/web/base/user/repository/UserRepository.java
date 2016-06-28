@@ -8,4 +8,6 @@ import com.hussard.web.base.user.domain.User;
 public interface UserRepository {
 
     User getUser(String username);
+
+    void save(User user);
 }
