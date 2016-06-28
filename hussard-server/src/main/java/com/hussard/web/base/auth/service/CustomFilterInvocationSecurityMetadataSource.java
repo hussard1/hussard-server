@@ -22,9 +22,8 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
     @Autowired
     private SecuredResourceService securedResourceService;
 
-    public CustomFilterInvocationSecurityMetadataSource() {
-        this.requestMap = new Hashtable<>();
-        this.reload();
+    public CustomFilterInvocationSecurityMetadataSource(Map<RequestMatcher, Collection<ConfigAttribute>> requestMap) {
+        this.requestMap = requestMap;
     }
 
     public Collection<ConfigAttribute> getAllConfigAttributes() {
@@ -55,7 +54,14 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
 
     public void reload(){
         requestMap.clear();
-        requestMap.putAll(securedResourceService.getMetaDataSource());
+
+        Map<RequestMatcher, Collection<ConfigAttribute>> reloadedMap;
+
+        if(securedResourceService != null){
+            reloadedMap = securedResourceService.getMetaDataSource();
+        }
+
+//        if(!reloadedMap.isEmpty()) requestMap.putAll(reloadedMap);
 
         logger.info("Secured Url Resources - Role Mappings reloaded at Runtime!");
     }
