@@ -1,9 +1,13 @@
 package com.hussard.web.config;
 
+import com.hussard.web.base.auth.service.CustomFilterInvocationSecurityMetadataSource;
 import com.hussard.web.base.user.service.LocaleResolvingHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AffirmativeBased;
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -13,6 +17,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -21,6 +27,8 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.Filter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Matthew on 2015-06-08.
@@ -51,16 +59,19 @@ public class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    public void configure(WebSecurity webSecurity) throws Exception {
+        webSecurity
+                .ignoring()
+                .antMatchers("/resource/**");
+    }
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeRequests()
-                .antMatchers("/**").permitAll()
-                .antMatchers("/resource/**").permitAll()
-                .antMatchers("/static/**").permitAll()
-                .anyRequest().authenticated()
                 .and()
             .formLogin()
-                .loginPage("/auth/c/login").permitAll()
+                .loginPage("/auth/login").permitAll()
                 .and()
             .addFilter(usernamePasswordAuthenticationFilter())
             .logout()
@@ -71,9 +82,31 @@ public class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
             .exceptionHandling()
                 .accessDeniedPage("/auth/c/denied")
                 .and()
+            .addFilterAfter(filterSecurityInterceptor(), FilterSecurityInterceptor.class)
             .httpBasic();
 
         http.rememberMe().rememberMeServices(rememberMeServices());
+    }
+
+    private Filter filterSecurityInterceptor() throws Exception {
+        FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
+        filterSecurityInterceptor.setSecurityMetadataSource(securityMetadataSource());
+        filterSecurityInterceptor.setAuthenticationManager(authenticationManager());
+        filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased());
+        return filterSecurityInterceptor;
+    }
+
+    @Bean
+    public FilterInvocationSecurityMetadataSource securityMetadataSource() {
+        return new CustomFilterInvocationSecurityMetadataSource();
+    }
+
+    @Bean
+    public AffirmativeBased affirmativeBased() {
+        RoleVoter voter = new RoleVoter();
+        List<AccessDecisionVoter<? extends Object>> voters = new ArrayList<>();
+        voters.add(voter);
+        return new AffirmativeBased(voters);
     }
 
     @Bean

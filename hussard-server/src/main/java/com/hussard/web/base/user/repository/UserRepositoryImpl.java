@@ -1,6 +1,11 @@
 package com.hussard.web.base.user.repository;
 
 import com.hussard.web.base.user.domain.User;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -9,8 +14,15 @@ import org.springframework.stereotype.Repository;
 @Repository("userRepository")
 public class UserRepositoryImpl implements UserRepository {
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     @Override
     public User getUser(String username) {
-        return null;
+        Session session = sessionFactory.getCurrentSession();
+
+        User user = (User) session.createCriteria(User.class).add(Restrictions.eq("username", username)).uniqueResult();
+
+        return user;
     }
 }
