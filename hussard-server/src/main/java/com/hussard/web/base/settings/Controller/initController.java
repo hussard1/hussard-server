@@ -1,7 +1,8 @@
-package com.hussard.web.base.settings.Controller;
+package com.hussard.web.base.settings.controller;
 
 import com.hussard.web.base.bbs.domain.Config;
 import com.hussard.web.base.bbs.service.BbsService;
+import com.hussard.web.base.settings.service.InitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,12 +16,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class initController {
 
     @Autowired
+    private InitService initService;
+
+    @Autowired
     private BbsService bbsService;
 
     @RequestMapping("")
     public String init(){
         return "/settings/index";
     }
+
+    @RequestMapping("/users")
+    public String users() {
+
+        initService.createDefaultAuthority();
+        initService.createDefaultGroup();
+        initService.createDefaultUser();
+
+        initService.createDefaultSecuredResource();
+
+        return "redirect:/settings/init";
+    }
+
 
 
     @RequestMapping("/bbs")

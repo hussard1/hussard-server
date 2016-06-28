@@ -1,5 +1,7 @@
 package com.hussard.web.base.user.domain;
 
+import com.hussard.web.base.auth.domain.Authority;
+import com.hussard.web.base.auth.domain.Group;
 import com.hussard.web.base.type.DomainType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +10,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by Matthew on 2015-06-08.
@@ -32,6 +35,9 @@ public class User implements Serializable, UserDetails {
     private String fullname;
 
     @Column
+    private String email;
+
+    @Column
     @Enumerated(EnumType.STRING)
     private Language language;
 
@@ -44,6 +50,12 @@ public class User implements Serializable, UserDetails {
 
     @Column
     private Date created;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Authority> authorities;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Group> groups;
 
     public User() {
         active = true;
@@ -135,5 +147,25 @@ public class User implements Serializable, UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
+    }
+
+    public Set<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

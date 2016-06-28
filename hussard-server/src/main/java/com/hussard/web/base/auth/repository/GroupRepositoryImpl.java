@@ -1,7 +1,7 @@
-package com.hussard.web.base.user.repository;
+package com.hussard.web.base.auth.repository;
 
+import com.hussard.web.base.auth.domain.Group;
 import com.hussard.web.base.user.domain.User;
-import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -10,28 +10,28 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Created by Matthew on 2015-06-08.
+ * Created by hussard on 2016. 6. 28..
  */
-@Repository("userRepository")
-public class UserRepositoryImpl implements UserRepository {
+@Repository
+public class GroupRepositoryImpl implements GroupRepository {
 
     @Autowired
     private SessionFactory sessionFactory;
 
     @Override
     @Transactional
-    public User getUser(String username) {
+    public Group getGroup(String name) {
         Session session = sessionFactory.getCurrentSession();
 
-        User user = (User) session.createCriteria(User.class).add(Restrictions.eq("username", username)).uniqueResult();
+        Group group = (Group) session.createCriteria(Group.class).add(Restrictions.eq("name", name)).uniqueResult();
 
-        return user;
+        return group;
     }
 
     @Override
     @Transactional
-    public void save(User user) {
+    public void save(Group group) {
         Session session = sessionFactory.getCurrentSession();
-        session.save(user);
+        session.save(group);
     }
 }
