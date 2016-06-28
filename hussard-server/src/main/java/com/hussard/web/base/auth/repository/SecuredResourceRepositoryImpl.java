@@ -1,12 +1,16 @@
 package com.hussard.web.base.auth.repository;
 
 import com.hussard.web.base.auth.domain.SecuredResource;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Created by hussard on 2016. 6. 28..
@@ -27,6 +31,19 @@ public class SecuredResourceRepositoryImpl implements SecuredResourceRepository 
 
         return securedResource;
     }
+
+    @Override
+    @Transactional
+    public List<SecuredResource> getSecuredResources() {
+
+        Session session = sessionFactory.getCurrentSession();
+
+        Criteria criteria = session.createCriteria(SecuredResource.class);
+        criteria.addOrder(Order.desc("sortOrder"));
+
+        return criteria.list();
+    }
+
 
     @Override
     @Transactional

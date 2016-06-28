@@ -58,18 +58,18 @@ public class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-//    @Override
-//    public void configure(WebSecurity webSecurity) throws Exception {
-//        webSecurity
-//                .ignoring()
-//                .antMatchers("/resource/**");
-//    }
+    @Override
+    public void configure(WebSecurity webSecurity) throws Exception {
+        webSecurity
+                .ignoring()
+                .antMatchers("/settings/**")
+                .antMatchers("/resource/**");
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeRequests()
-                .antMatchers("/settings/**").permitAll()
                 .and()
             .formLogin()
                 .loginPage("/auth/login").permitAll()
@@ -83,7 +83,7 @@ public class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
             .exceptionHandling()
                 .accessDeniedPage("/auth/c/denied")
                 .and()
-//            .addFilterAfter(filterSecurityInterceptor(), FilterSecurityInterceptor.class)
+            .addFilterAfter(filterSecurityInterceptor(), FilterSecurityInterceptor.class)
             .httpBasic();
 
         http.rememberMe().rememberMeServices(rememberMeServices());
