@@ -95,6 +95,11 @@ public class User implements Serializable, UserDetails {
     }
 
     @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
     public String getPassword() {
         return password;
     }
@@ -142,11 +147,6 @@ public class User implements Serializable, UserDetails {
 
     public void setCreated(Date created) {
         this.created = created;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
     }
 
     public void setAuthorities(Set<Authority> authorities) {

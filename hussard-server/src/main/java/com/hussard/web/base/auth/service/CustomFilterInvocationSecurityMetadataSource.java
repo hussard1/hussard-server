@@ -1,5 +1,8 @@
 package com.hussard.web.base.auth.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
@@ -13,10 +16,14 @@ import java.util.*;
  */
 public class CustomFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Map<RequestMatcher, Collection<ConfigAttribute>> requestMap;
 
-    public CustomFilterInvocationSecurityMetadataSource() {
-        this.requestMap = new Hashtable<>();
+    @Autowired
+    private SecuredResourceService securedResourceService;
+
+    public CustomFilterInvocationSecurityMetadataSource(Map<RequestMatcher, Collection<ConfigAttribute>> requestMap) {
+        this.requestMap = requestMap;
     }
 
     public Collection<ConfigAttribute> getAllConfigAttributes() {
@@ -43,5 +50,18 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
 
     public boolean supports(Class<?> clazz) {
         return FilterInvocation.class.isAssignableFrom(clazz);
+    }
+
+    public void reload(){
+        requestMap.clear();
+
+        Map<RequestMatcher, Collection<ConfigAttribute>> reloadedMap;
+
+        if(securedResourceService != null){
+            reloadedMap = securedResourceService.getMetaDataSource();
+            if(!reloadedMap.isEmpty()) requestMap.putAll(reloadedMap);
+        }
+
+        logger.info("Secured Url Resources - Role Mappings reloaded at Runtime!");
     }
 }

@@ -1,9 +1,11 @@
 package com.hussard.web.base.auth.domain;
 
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.annotation.Generated;
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
