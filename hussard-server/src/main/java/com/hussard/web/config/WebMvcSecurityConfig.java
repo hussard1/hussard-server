@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.vote.AffirmativeBased;
+import org.springframework.security.access.vote.AuthenticatedVoter;
 import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -70,26 +71,32 @@ public class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity webSecurity) throws Exception {
         webSecurity
                 .ignoring()
+                .antMatchers("/")
+                .antMatchers("/index")
                 .antMatchers("/settings/**")
-                .antMatchers("/resource/**");
+                .antMatchers("/resource/**")
+                .antMatchers("/auth/login")
+                .antMatchers("/auth/c/denied")
+                .antMatchers("/logout");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-            .authorizeRequests()
-                .and()
             .formLogin()
                 .loginPage("/auth/login").permitAll()
                 .and()
             .addFilter(usernamePasswordAuthenticationFilter())
             .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/j_spring_security_logout"))
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/")
                 .deleteCookies("JSESSIONID")
                 .and()
             .exceptionHandling()
                 .accessDeniedPage("/auth/c/denied")
+                .and()
+            .authorizeRequests()
+                .anyRequest().authenticated()
                 .and()
             .addFilterAfter(filterSecurityInterceptor(), FilterSecurityInterceptor.class)
             .httpBasic();
@@ -107,19 +114,18 @@ public class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public FilterInvocationSecurityMetadataSource securityMetadataSource() {
-        return new CustomFilterInvocationSecurityMetadataSource(initRequestMap());
-    }
-
-    private Map<RequestMatcher, Collection<ConfigAttribute>> initRequestMap(){
-        return securedResourceService.getMetaDataSource();
+        return new CustomFilterInvocationSecurityMetadataSource(securedResourceService.getMetaDataSource());
     }
 
     @Bean
     public AffirmativeBased affirmativeBased() {
         RoleVoter voter = new RoleVoter();
+        voter.setRolePrefix("");
         List<AccessDecisionVoter<? extends Object>> voters = new ArrayList<>();
         voters.add(voter);
-        return new AffirmativeBased(voters);
+        AffirmativeBased affirmativeBased = new AffirmativeBased(voters);
+        affirmativeBased.setAllowIfAllAbstainDecisions(false);
+        return affirmativeBased;
     }
 
     @Bean

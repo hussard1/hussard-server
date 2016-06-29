@@ -59,9 +59,8 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
 
         if(securedResourceService != null){
             reloadedMap = securedResourceService.getMetaDataSource();
+            if(!reloadedMap.isEmpty()) requestMap.putAll(reloadedMap);
         }
-
-//        if(!reloadedMap.isEmpty()) requestMap.putAll(reloadedMap);
 
         logger.info("Secured Url Resources - Role Mappings reloaded at Runtime!");
     }
