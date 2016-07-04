@@ -13,7 +13,7 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 @Import({
         WebMvcSecurityConfig.class,
         PersistenceConfig.class,
-        MongoDBConfig.class
+//        MongoDBConfig.class
 })
 @ComponentScan(basePackages = "com.hussard.web",
 excludeFilters = {

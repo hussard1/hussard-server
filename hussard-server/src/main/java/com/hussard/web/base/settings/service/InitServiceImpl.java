@@ -44,27 +44,58 @@ public class InitServiceImpl implements InitService {
     @Override
     public void createDefaultSecuredResource() {
         SecuredResource adminSecuredResource = securedResourceRepository.getSecuredResource("ADMIN_RESOURCE");
-        if(adminSecuredResource != null){
+        SecuredResource userSecuredResource = securedResourceRepository.getSecuredResource("USER_RESOURCE");
+        if(adminSecuredResource != null || userSecuredResource != null){
             return;
         }
 
         adminSecuredResource = new SecuredResource();
         adminSecuredResource.setName("ADMIN_RESOURCE");
-        adminSecuredResource.setPattern("admin/**");
+        adminSecuredResource.setPattern("/admin/**");
         adminSecuredResource.setSortOrder(0);
 
-        Set<Authority> authorities = new HashSet<>();
-        authorities.add(authorityRepository.getAuthority("ADMIN_AUTHORITY"));
-        adminSecuredResource.setAuthorities(authorities);
+        Set<Authority> adminAuthorities = new HashSet<>();
+        adminAuthorities.add(authorityRepository.getAuthority("ADMIN_AUTHORITY"));
+        adminSecuredResource.setAuthorities(adminAuthorities);
 
         securedResourceRepository.save(adminSecuredResource);
+
+
+        userSecuredResource = new SecuredResource();
+        userSecuredResource.setName("USER_RESOURCE");
+        userSecuredResource.setPattern("/**");
+        userSecuredResource.setSortOrder(9999);
+
+        Set<Authority> userAuthorities = new HashSet<>();
+        userAuthorities.add(authorityRepository.getAuthority("USER_AUTHORITY"));
+        userSecuredResource.setAuthorities(userAuthorities);
+
+        securedResourceRepository.save(userSecuredResource);
+    }
+
+
+    @Override
+    public void createAnonymousSecuredResource() {
+        SecuredResource securedResource = securedResourceRepository.getSecuredResource("ANONYMOUS");
+
+        if(securedResource != null){
+            return;
+        }
+
+        securedResource = new SecuredResource();
+        securedResource.setName("ANONYMOUS");
+        securedResource.setPattern("/auth/**");
+        securedResource.setSortOrder(1);
+
+        securedResourceRepository.save(securedResource);
     }
 
     @Override
     public void createDefaultAuthority() {
         Authority adminAuthority = authorityRepository.getAuthority("ADMIN_AUTHORITY");
+        Authority userAuthority = authorityRepository.getAuthority("USER_AUTHORITY");
 
-        if(adminAuthority != null){
+        if(adminAuthority != null && userAuthority != null){
             return;
         }
 
@@ -73,12 +104,18 @@ public class InitServiceImpl implements InitService {
 
         authorityRepository.save(adminAuthority);
 
+
+        userAuthority = new Authority();
+        userAuthority.setName("USER_AUTHORITY");
+        authorityRepository.save(userAuthority);
     }
 
     @Override
     public void createDefaultGroup() {
         Group adminGroup = groupRepository.getGroup("ADMIN_GROUP");
-        if (adminGroup != null) {
+        Group userGroup = groupRepository.getGroup("USER_GROUP");
+
+        if (adminGroup != null || userGroup != null) {
             return;
         }
         // admin
@@ -91,6 +128,17 @@ public class InitServiceImpl implements InitService {
         adminGroup.setAuthorities(authorities);
 
         groupRepository.save(adminGroup);
+
+        //User
+        userGroup = new Group();
+        userGroup.setName("USER_GROUP");
+        userGroup.setDesc("user group");
+
+        Set<Authority> userAuthorities = new HashSet<>();
+        userAuthorities.add(authorityRepository.getAuthority("USER_AUTHORITY"));
+        adminGroup.setAuthorities(userAuthorities);
+
+        groupRepository.save(userGroup);
 
     }
 
@@ -112,10 +160,12 @@ public class InitServiceImpl implements InitService {
 
         Set<Group> groups = new HashSet<>();
         groups.add(groupRepository.getGroup("ADMIN_GROUP"));
+        groups.add(groupRepository.getGroup("USER_GROUP"));
         user.setGroups(groups);
 
         Set<Authority> authorities = new HashSet<>();
         authorities.add(authorityRepository.getAuthority("ADMIN_AUTHORITY"));
+        authorities.add(authorityRepository.getAuthority("USER_AUTHORITY"));
         user.setAuthorities(authorities);
 
 //        user.setTimezone(Timezone.en);
@@ -125,6 +175,6 @@ public class InitServiceImpl implements InitService {
 //        user.setVendor(vendorRepository.getVendor("TP041"));
 
         userRepository.save(user);
-
     }
+
 }

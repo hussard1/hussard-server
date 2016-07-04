@@ -14,4 +14,6 @@ public interface InitService {
     void createDefaultGroup();
 
     void createDefaultUser();
+
+    void createAnonymousSecuredResource();
 }
