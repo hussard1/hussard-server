@@ -1,6 +1,7 @@
 package com.hussard.web.config;
 
 import com.hussard.web.base.auth.service.CustomFilterInvocationSecurityMetadataSource;
+import com.hussard.web.base.auth.service.CustomRoleVoter;
 import com.hussard.web.base.auth.service.SecuredResourceService;
 import com.hussard.web.base.user.service.LocaleResolvingHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,9 +76,7 @@ public class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/index")
                 .antMatchers("/settings/**")
                 .antMatchers("/resource/**")
-                .antMatchers("/auth/login")
-                .antMatchers("/auth/c/denied")
-                .antMatchers("/logout");
+                .antMatchers("/static/**");
     }
 
     @Override
@@ -88,7 +87,7 @@ public class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
             .addFilter(usernamePasswordAuthenticationFilter())
             .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout"))
                 .logoutSuccessUrl("/")
                 .deleteCookies("JSESSIONID")
                 .and()
@@ -106,8 +105,8 @@ public class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private Filter filterSecurityInterceptor() throws Exception {
         FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
-        filterSecurityInterceptor.setSecurityMetadataSource(securityMetadataSource());
         filterSecurityInterceptor.setAuthenticationManager(authenticationManager());
+        filterSecurityInterceptor.setSecurityMetadataSource(securityMetadataSource());
         filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased());
         return filterSecurityInterceptor;
     }
@@ -119,7 +118,7 @@ public class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AffirmativeBased affirmativeBased() {
-        RoleVoter voter = new RoleVoter();
+        RoleVoter voter = new CustomRoleVoter();
         voter.setRolePrefix("");
         List<AccessDecisionVoter<? extends Object>> voters = new ArrayList<>();
         voters.add(voter);
@@ -151,6 +150,6 @@ public class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationFailureHandler authenticationFailureHandler() {
-        return new SimpleUrlAuthenticationFailureHandler("/auth/c/login?login_error");
+        return new SimpleUrlAuthenticationFailureHandler("/auth/login?login_error");
     }
 }

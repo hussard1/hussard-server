@@ -34,6 +34,7 @@ public class initController {
         initService.createDefaultUser();
 
         initService.createDefaultSecuredResource();
+//        initService.createAnonymousSecuredResource();
 
         return "redirect:/settings/init";
     }

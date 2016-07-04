@@ -38,6 +38,6 @@ public class LoginController {
             logger.error("Authentication error: " + session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION));
         }
 
-        return "auth/login";
+        return "/auth/login";
     }
 }

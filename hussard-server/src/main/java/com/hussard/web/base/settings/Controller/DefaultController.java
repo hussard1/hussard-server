@@ -19,7 +19,7 @@ public class DefaultController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @RequestMapping({"", "index"})
+    @RequestMapping({"", "/index"})
     public String init(){
 //        logger.info("");
         return "/index";
