@@ -3,13 +3,47 @@
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta name="description" content=""/>
     <meta name="author" content=""/>
     <script src="/static/js/jquery-1.7.1.min.js"></script>
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}"/>
-    <link href="/static/css/bbs/blog-home.css" rel="stylesheet" th:href="@{/static/css/bbs/blog-home.css}"/>
-    <!--/*  Each token will be replaced by their respective titles in the resulting page. */-->
+
+    <!-- Basic Styles -->
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/bootstrap.min.css" th:href="@{/static/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/font-awesome.min.css" th:href="@{/static/css/font-awesome.min.css}"/>
+
+    <!-- SmartAdmin Styles : Caution! DO NOT change the order -->
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/smartadmin-production-plugins.min.css" th:href="@{/static/css/smartadmin-production-plugins.min.css}"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/smartadmin-production.min.css" th:href="@{/static/css/smartadmin-production.min.css}"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/smartadmin-skins.min.css" th:href="@{/static/css/smartadmin-skins.min.css}"/>
+    <!-- SmartAdmin RTL Support  -->
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/smartadmin-rtl.min.css" th:href="@{/static/css/smartadmin-rtl.min.css}"/>
+
+    <!-- FAVICONS -->
+    <link rel="shortcut icon" href="/static/img/favicon/favicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="/static/img/favicon/favicon.ico" type="image/x-icon"/>
+
+    <!-- GOOGLE FONT -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700"/>
+
+    <!-- Specifying a Webpage Icon for Web Clip
+     Ref: https://developer.apple.com/library/ios/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html -->
+    <link rel="apple-touch-icon" href="/static/img/splash/sptouch-icon-iphone.png"/>
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/img/splash/touch-icon-ipad.png"/>
+    <link rel="apple-touch-icon" sizes="120x120" href="/static/img/splash/touch-icon-iphone-retina.png"/>
+    <link rel="apple-touch-icon" sizes="152x152" href="/static/img/splash/touch-icon-ipad-retina.png"/>
+
+    <!-- iOS web-app metas : hides Safari UI Components and Changes Status Bar Appearance -->
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+
+    <!-- Startup image for web apps -->
+    <link rel="apple-touch-startup-image" href="/static/img/splash/ipad-landscape.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)"/>
+    <link rel="apple-touch-startup-image" href="/static/img/splash/ipad-portrait.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)"/>
+    <link rel="apple-touch-startup-image" href="/static/img/splash/iphone.png" media="screen and (max-device-width: 320px)"/>
+
+    <!-- custom -->
+
     <title tiles:replace="title"> Title </title>
 </head>
 
@@ -18,7 +52,38 @@
     <div th:replace="layout/header :: header">
     </div>
 
-    <div class="container">
+    <div th:replace="layout/left :: left">
+    </div>
+
+    <div id="main" role="main">
+
+        <div id="ribbon">
+
+				<span class="ribbon-button-alignment">
+					<span id="refresh" class="btn btn-ribbon" data-action="resetWidgets" data-title="refresh" rel="tooltip" data-placement="bottom" data-original-title="" data-html="true">
+						<i class="fa fa-refresh"></i>
+					</span>
+				</span>
+
+            <!-- breadcrumb -->
+            <ol class="breadcrumb">
+                <li>Home</li><li>Tables</li><li>Normal Tables</li>
+            </ol>
+            <!-- end breadcrumb -->
+
+            <!-- You can also add more buttons to the
+            ribbon for further usability
+
+            Example below:
+
+            <span class="ribbon-button-alignment pull-right">
+            <span id="search" class="btn btn-ribbon hidden-xs" data-title="search"><i class="fa-grid"></i> Change Grid</span>
+            <span id="add" class="btn btn-ribbon hidden-xs" data-title="add"><i class="fa-plus"></i> Add</span>
+            <span id="search" class="btn btn-ribbon" data-title="search"><i class="fa-search"></i> <span class="hidden-mobile">Search</span></span>
+            </span> -->
+
+        </div>
+
         <div tiles:replace="content">
             <!-- ============================================================================ -->
             <!-- This content is only used for static prototyping purposes (natural templates)-->
@@ -36,6 +101,118 @@
         </div>
 
     </div>
+
     <div th:replace="layout/footer :: footer">&copy; 2014 The Static Templates</div>
+
+    <!--================================================== -->
+
+    <!-- PACE LOADER - turn this on if you want ajax loading to show (caution: uses lots of memory on iDevices)-->
+    <script data-pace-options='{ "restartOnRequestAfter": true }' th:src="@{/static/js/plugin/pace/pace.min.js}"></script>
+
+    <!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        if (!window.jQuery) {
+            document.write('<script src="@{/static/js/libs/jquery-2.1.1.min.js"><\/script>');
+        }
+        /*]]>*/
+    </script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        if (!window.jQuery.ui) {
+            document.write('<script src="@{/static/js/libs/jquery-ui-1.10.3.min.js"><\/script>');
+        }
+        /*]]>*/
+    </script>
+
+    <!-- IMPORTANT: APP CONFIG -->
+    <script th:src="@{/static/js/app.config.js}"></script>
+
+    <!-- JS TOUCH : include this plugin for mobile drag / drop touch events-->
+    <script th:src="@{/static/js/plugin/jquery-touch/jquery.ui.touch-punch.min.js}"></script>
+
+    <!-- BOOTSTRAP JS -->
+    <script th:src="@{/static/js/bootstrap/bootstrap.min.js}"></script>
+
+    <!-- CUSTOM NOTIFICATION -->
+    <script th:src="@{/static/js/notification/SmartNotification.min.js}"></script>
+
+    <!-- JARVIS WIDGETS -->
+    <script th:src="@{/static/js/smartwidgets/jarvis.widget.min.js}"></script>
+
+    <!-- EASY PIE CHARTS -->
+    <script th:src="@{/static/js/plugin/easy-pie-chart/jquery.easy-pie-chart.min.js}"></script>
+
+    <!-- SPARKLINES -->
+    <script th:src="@{/static/js/plugin/sparkline/jquery.sparkline.min.js}"></script>
+
+    <!-- JQUERY VALIDATE -->
+    <script th:src="@{/static/js/plugin/jquery-validate/jquery.validate.min.js}"></script>
+
+    <!-- JQUERY MASKED INPUT -->
+    <script th:src="@{/static/js/plugin/masked-input/jquery.maskedinput.min.js}"></script>
+
+    <!-- JQUERY SELECT2 INPUT -->
+    <script th:src="@{/static/js/plugin/select2/select2.min.js}"></script>
+
+    <!-- JQUERY UI + Bootstrap Slider -->
+    <script th:src="@{/static/js/plugin/bootstrap-slider/bootstrap-slider.min.js}"></script>
+
+    <!-- browser msie issue fix -->
+    <script th:src="@{/static/js/plugin/msie-fix/jquery.mb.browser.min.js}"></script>
+
+    <!-- FastClick: For mobile devices -->
+    <script th:src="@{/static/js/plugin/fastclick/fastclick.min.js}"></script>
+
+    <!--[if IE 8]>
+
+    <h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
+
+    <![endif]-->
+
+    <!-- Demo purpose only -->
+    <script th:src="@{/static/js/demo.min.js}"></script>
+
+    <!-- MAIN APP JS FILE -->
+    <script th:src="@{/static/js/app.min.js}"></script>
+
+    <!-- ENHANCEMENT PLUGINS : NOT A REQUIREMENT -->
+    <!-- Voice command : plugin -->
+    <script th:src="@{/static/js/speech/voicecommand.min.js}"></script>
+
+    <!-- SmartChat UI : plugin -->
+    <script th:src="@{/static/js/smart-chat-ui/smart.chat.ui.min.js}"></script>
+    <script th:src="@{/static/js/smart-chat-ui/smart.chat.manager.min.js}"></script>
+
+    <!-- PAGE RELATED PLUGIN(S) -->
+
+    <!-- Flot Chart Plugin: Flot Engine, Flot Resizer, Flot Tooltip -->
+    <script th:src="@{/static/js/plugin/flot/jquery.flot.cust.min.js}"></script>
+    <script th:src="@{/static/js/plugin/flot/jquery.flot.resize.min.js}"></script>
+    <script th:src="@{/static/js/plugin/flot/jquery.flot.time.min.js}"></script>
+    <script th:src="@{/static/js/plugin/flot/jquery.flot.tooltip.min.js}"></script>
+
+    <!-- Vector Maps Plugin: Vectormap engine, Vectormap language -->
+    <script th:src="@{/static/js/plugin/vectormap/jquery-jvectormap-1.2.2.min.js}"></script>
+    <script th:src="@{/static/js/plugin/vectormap/jquery-jvectormap-world-mill-en.js}"></script>
+
+    <!-- Full Calendar -->
+    <script th:src="@{/static/js/plugin/moment/moment.min.js}"></script>
+    <script th:src="@{/static/js/plugin/fullcalendar/jquery.fullcalendar.min.js}"></script>
+
+
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function() {
+
+            // DO NOT REMOVE : GLOBAL FUNCTIONS!
+            pageSetUp();
+        });
+        /*]]>*/
+    </script>
+
     </body>
 </html>
