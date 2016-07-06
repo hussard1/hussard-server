@@ -35,8 +35,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             logger.debug("User that is logged in is " + user);
         }
 
-
-
         for(Group group : user.getGroups()){
             ((Set<Authority>)user.getAuthorities()).addAll(group.getAuthorities());
         }

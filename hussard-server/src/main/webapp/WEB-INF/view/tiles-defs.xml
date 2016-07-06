@@ -5,16 +5,18 @@
 
 <tiles-definitions>
 
+    <definition name="/*" template="index">
+    </definition>
+
+    <definition name="/auth/*" template="auth/login">
+    </definition>
+
     <!--
       Main definition that uses layout.html to put title and content attributes from
       Thymeleaf fragments; {1} will be evaluated to either 'list', 'form' or 'view'.
     -->
-    <definition name="/*" template="layout/layout">
-        <put-attribute name="title" value="title/{1}"/>
-        <put-attribute name="content" value="content/{1}"/>
-    </definition>
 
-    <definition name="/*/*" template="layout/layout">
+    <definition name="/admin/*/*" template="layout/layout">
         <put-attribute name="title" value="title/{1}/{2}"/>
         <put-attribute name="content" value="content/{1}/{2}"/>
     </definition>
@@ -23,9 +25,6 @@
       'template' attribute is a template file stored in /WEB-INF/views/message folder;
       {1} will be evaluated to either 'list', 'form' or 'view'.
     -->
-    <definition name="title/*" template="{1} :: title"/>
-    <definition name="content/*" template="{1} :: content"/>
-
     <definition name="title/*/*" template="{1}/{2} :: title"/>
     <definition name="content/*/*" template="{1}/{2} :: content"/>
 </tiles-definitions>

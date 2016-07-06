@@ -48,6 +48,7 @@ dependencies {
 
     compile("org.thymeleaf.extras:thymeleaf-extras-tiles2:2.1.1.RELEASE")
     compile("org.thymeleaf.extras:thymeleaf-extras-tiles2-spring4:2.1.1.RELEASE")
+    compile("org.thymeleaf.extras:thymeleaf-extras-springsecurity4:2.1.2.RELEASE")
 
     provided "org.projectlombok:lombok:1.16.8"
 
