@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/admin/user")
-public class UserController {
+public class UserMgmtController {
 
     @Autowired
     private UserService userService;
@@ -27,7 +27,6 @@ public class UserController {
 
     @RequestMapping("/list")
     public String list(Model model){
-
         List<User> users = userService.getList();
         model.addAttribute("users", users);
         return "/admin/user/list";

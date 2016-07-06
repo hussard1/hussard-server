@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = ApplicationConfig.class)
 @TransactionConfiguration(defaultRollback = true)
 @Transactional
-public class UserControllerTest {
+public class UserMgmtControllerTest {
 
     @Autowired
     private UserService userService;

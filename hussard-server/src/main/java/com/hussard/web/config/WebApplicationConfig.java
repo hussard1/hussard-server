@@ -1,5 +1,6 @@
 package com.hussard.web.config;
 
+import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +19,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.*;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
-import org.thymeleaf.extras.tiles2.dialect.TilesDialect;
-import org.thymeleaf.extras.tiles2.spring4.web.configurer.ThymeleafTilesConfigurer;
-import org.thymeleaf.extras.tiles2.spring4.web.view.ThymeleafTilesView;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
@@ -69,8 +67,8 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter {
     public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.setTemplateResolver(templateResolver());
-        templateEngine.addDialect(new TilesDialect());
         templateEngine.addDialect(new SpringSecurityDialect());
+        templateEngine.addDialect(new LayoutDialect());
         return templateEngine;
     }
 
@@ -79,17 +77,9 @@ public class WebApplicationConfig extends WebMvcConfigurerAdapter {
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
         viewResolver.setTemplateEngine(templateEngine());
         viewResolver.setCharacterEncoding("UTF-8");
-        viewResolver.setViewClass(ThymeleafTilesView.class);
         viewResolver.setOrder(1);
 
         return viewResolver;
-    }
-
-    @Bean
-    public ThymeleafTilesConfigurer tilesConfigurer() {
-        ThymeleafTilesConfigurer ttc = new ThymeleafTilesConfigurer();
-        ttc.setDefinitions(new String[]{"/WEB-INF/view/tiles-defs.xml"});
-        return ttc;
     }
 
     @Bean
