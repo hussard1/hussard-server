@@ -49,7 +49,10 @@ public class CustomRoleVoter extends RoleVoter {
 
     boolean isAccessPath(FilterInvocation filterInvocation){
         String requestPath = (filterInvocation).getRequest().getServletPath();
-        if(requestPath.startsWith("/auth/")){
+        if(requestPath.startsWith("/auth/")
+            || requestPath.startsWith("/")
+            || requestPath.startsWith("/index")
+        ){
             return true;
         }
         return false;

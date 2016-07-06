@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title tiles:fragement="title">Title</title>
+    <title>Title</title>
 </head>
 <body>
-    <div tiles:fragment="content">
+        <a href="/auth/login">로그인</a>
+        <span th:text="${#authentication == null? 'a': #authentication.name}">aa</span>
         Hello world!
-        <a href="/logout">로그아웃</a>
-    </div>
+        <a href="/auth/logout">로그아웃</a>
 </body>
 </html>

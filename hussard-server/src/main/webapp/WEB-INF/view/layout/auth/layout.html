@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html id="extr-page">
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -49,42 +49,19 @@
     <title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE">Task List</title>
 </head>
 
-<body>
-    <!--/* Standard layout can be mixed with Layout Dialect */-->
-    <div th:replace="layout/header :: header">
-    </div>
+<body class="animated fadeInDown">
 
-    <div th:replace="layout/left :: left">
-    </div>
+    <header id="header">
+
+        <div id="logo-group">
+            <span id="logo"> <img src="/static/img/logo.png" alt="SmartAdmin"/> </span>
+        </div>
+
+        <span id="extr-page-header-space"> <span class="hidden-mobile hiddex-xs">Need an account?</span> <a href="register.html" class="btn btn-danger">Create account</a> </span>
+
+    </header>
 
     <div id="main" role="main">
-
-        <div id="ribbon">
-
-				<span class="ribbon-button-alignment">
-					<span id="refresh" class="btn btn-ribbon" data-action="resetWidgets" data-title="refresh" rel="tooltip" data-placement="bottom" data-original-title="" data-html="true">
-						<i class="fa fa-refresh"></i>
-					</span>
-				</span>
-
-            <!-- breadcrumb -->
-            <ol class="breadcrumb">
-                <li>Home</li><li>Tables</li><li>Normal Tables</li>
-            </ol>
-            <!-- end breadcrumb -->
-
-            <!-- You can also add more buttons to the
-            ribbon for further usability
-
-            Example below:
-
-            <span class="ribbon-button-alignment pull-right">
-            <span id="search" class="btn btn-ribbon hidden-xs" data-title="search"><i class="fa-grid"></i> Change Grid</span>
-            <span id="add" class="btn btn-ribbon hidden-xs" data-title="add"><i class="fa-plus"></i> Add</span>
-            <span id="search" class="btn btn-ribbon" data-title="search"><i class="fa-search"></i> <span class="hidden-mobile">Search</span></span>
-            </span> -->
-
-        </div>
 
         <div layout:fragment="content">
             <!-- ============================================================================ -->
@@ -103,9 +80,6 @@
         </div>
 
     </div>
-
-    <div th:replace="layout/footer :: footer">&copy; 2014 The Static Templates</div>
-
     <!--================================================== -->
 
     <!-- PACE LOADER - turn this on if you want ajax loading to show (caution: uses lots of memory on iDevices)-->

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Created by Matthew on 2015-06-08.
  */
@@ -33,5 +35,13 @@ public class UserRepositoryImpl implements UserRepository {
     public void save(User user) {
         Session session = sessionFactory.getCurrentSession();
         session.save(user);
+    }
+
+    @Override
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<User> getList() {
+        Session session = sessionFactory.getCurrentSession();
+        return session.createCriteria(User.class).list();
     }
 }

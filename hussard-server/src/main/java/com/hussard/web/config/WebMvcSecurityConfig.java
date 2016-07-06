@@ -72,8 +72,6 @@ public class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity webSecurity) throws Exception {
         webSecurity
                 .ignoring()
-                .antMatchers("/")
-                .antMatchers("/index")
                 .antMatchers("/settings/**")
                 .antMatchers("/resource/**")
                 .antMatchers("/static/**");
