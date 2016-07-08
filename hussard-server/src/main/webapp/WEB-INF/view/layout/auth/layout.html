@@ -49,7 +49,7 @@
     <title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE">Task List</title>
 </head>
 
-<body class="animated fadeInDown">
+<body class="animated fadeInDown" layout:fragment="body">
 
     <header id="header">
 
@@ -57,13 +57,13 @@
             <span id="logo"> <img src="/static/img/logo.png" alt="SmartAdmin"/> </span>
         </div>
 
-        <span id="extr-page-header-space"> <span class="hidden-mobile hiddex-xs">Need an account?</span> <a href="register.html" class="btn btn-danger">Create account</a> </span>
+        <span id="extr-page-header-space"> <span class="hidden-mobile hiddex-xs">Need an account?</span> <a href="/auth/register" th:href="@{/auth/register}" class="btn btn-danger">Create account</a> </span>
 
     </header>
 
     <div id="main" role="main">
 
-        <div layout:fragment="content">
+        <div>
             <!-- ============================================================================ -->
             <!-- This content is only used for static prototyping purposes (natural templates)-->
             <!-- and is therefore entirely optional, as this markup fragment will be included -->
@@ -83,7 +83,8 @@
     <!--================================================== -->
 
     <!-- PACE LOADER - turn this on if you want ajax loading to show (caution: uses lots of memory on iDevices)-->
-    <script data-pace-options='{ "restartOnRequestAfter": true }' th:src="@{/static/js/plugin/pace/pace.min.js}"></script>
+    <!--<script data-pace-options='{ "restartOnRequestAfter": true }' th:src="@{/static/js/plugin/pace/pace.min.js}"></script>-->
+    <script th:src="@{/static/js/plugin/pace/pace.min.js}"></script>
 
     <!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -188,6 +189,9 @@
             pageSetUp();
         });
         /*]]>*/
+    </script>
+
+    <script type="text/javascript" th:inline="javascript" layout:fragment="script">
     </script>
 
     </body>

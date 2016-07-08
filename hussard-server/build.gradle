@@ -39,6 +39,8 @@ dependencies {
     compile("net.sf.json-lib:json-lib:2.4:jdk15")
     compile("com.googlecode.json-simple:json-simple:1.1.1")
 
+//    compile("com.google.code.gson:gson:2.7")
+
     compile("com.fasterxml.jackson.core:jackson-core:${fasterxmlVersion}")
     compile("com.fasterxml.jackson.core:jackson-annotations:${fasterxmlVersion}")
     compile("com.fasterxml.jackson.core:jackson-databind:${fasterxmlVersion}")
