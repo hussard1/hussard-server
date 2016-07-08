@@ -152,7 +152,8 @@ public class InitServiceImpl implements InitService {
         user = new User();
         user.setUsername("admin");
         user.setPassword(passwordEncoder.encode("1"));
-        user.setFullname("Administrator");
+        user.setFirstName("Administrator");
+        user.setLastName("Admin");
         user.setEmail("convergence@motrex.co.kr");
         user.setLanguage(Language.ko);
         user.setCountry(Country.KR);

@@ -5,8 +5,12 @@
 </head>
 <body>
         <a href="/auth/login">로그인</a>
+        <br/>
         <span th:text="${#authentication == null? 'a': #authentication.name}">aa</span>
-        Hello world!
+        로그인 됨
+        <br/>
         <a href="/auth/logout">로그아웃</a>
+        <br/>
+        <a href="/settings/init">세팅</a>
 </body>
 </html>

@@ -1,14 +1,27 @@
 <!DOCTYPE html>
-<html lang="en-us" id="extr-page" layout:decorator="layout/auth/layout">>
+<html lang="en-us" id="extr-page" layout:decorator="layout/auth/layout">
 	<head>
 		<title>Title</title>
 	</head>
 	
-	<body id="login">
+<body id="login" layout:fragment="body">
+
+		<header id="header">
+			<!--<span id="logo"></span>-->
+
+			<div id="logo-group">
+				<span id="logo"> <img src="/static/img/logo.png" alt="SmartAdmin"/> </span>
+
+				<!-- END AJAX-DROPDOWN -->
+			</div>
+
+			<span id="extr-page-header-space"> <span class="hidden-mobile hiddex-xs">Already registered?</span> <a href="/auth/login" th:href="@{/auth/login}" class="btn btn-danger">Sign In</a> </span>
+
+		</header>
 
 		<div id="main" role="main">
 
-			<div layout:fragment="content" id="content" class="container">
+			<div id="content" class="container">
 			<!-- MAIN CONTENT -->
 
 				<div class="row">
@@ -47,7 +60,7 @@
 					<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
 						<div class="well no-padding">
 
-							<form action="php/demo-register.php" id="smart-form-register" class="smart-form client-form">
+							<form th:action="@{/auth/register}" th:object="${user}" action="/auth/register" id="smart-form-register" class="smart-form client-form" method="post">
 								<header>
 									Registration is FREE*
 								</header>
@@ -55,19 +68,19 @@
 								<fieldset>
 									<section>
 										<label class="input"> <i class="icon-append fa fa-user"></i>
-											<input type="text" name="username" placeholder="Username"/>
+											<input type="text" name="username" placeholder="Username" th:field="*{username}"/>
 											<b class="tooltip tooltip-bottom-right">Needed to enter the website</b> </label>
 									</section>
 
 									<section>
 										<label class="input"> <i class="icon-append fa fa-envelope"></i>
-											<input type="email" name="email" placeholder="Email address"/>
+											<input type="email" name="email" placeholder="Email address" th:field="*{email}"/>
 											<b class="tooltip tooltip-bottom-right">Needed to verify your account</b> </label>
 									</section>
 
 									<section>
 										<label class="input"> <i class="icon-append fa fa-lock"></i>
-											<input type="password" name="password" placeholder="Password" id="password"/>
+											<input type="password" name="password" placeholder="Password" id="password" th:field="*{password}"/>
 											<b class="tooltip tooltip-bottom-right">Don't forget your password</b> </label>
 									</section>
 
@@ -82,12 +95,12 @@
 									<div class="row">
 										<section class="col col-6">
 											<label class="input">
-												<input type="text" name="firstname" placeholder="First name"/>
+												<input type="text" name="firstname" placeholder="First name" th:field="*{firstName}"/>
 											</label>
 										</section>
 										<section class="col col-6">
 											<label class="input">
-												<input type="text" name="lastname" placeholder="Last name"/>
+												<input type="text" name="lastname" placeholder="Last name" th:field="*{lastName}"/>
 											</label>
 										</section>
 									</div>
@@ -95,17 +108,12 @@
 									<div class="row">
 										<section class="col col-6">
 											<label class="select">
-												<select name="gender">
+												<select name="gender" th:field="*{gender}">
 													<option value="0" selected="" disabled="">Gender</option>
 													<option value="1">Male</option>
 													<option value="2">Female</option>
 													<option value="3">Prefer not to answer</option>
 												</select> <i></i> </label>
-										</section>
-										<section class="col col-6">
-											<label class="input"> <i class="icon-append fa fa-calendar"></i>
-												<input type="text" name="request" placeholder="Request activation on" class="datepicker" data-dateformat='dd/mm/yy'/>
-											</label>
 										</section>
 									</div>
 
@@ -144,6 +152,9 @@
 							</li>
 							<li>
 								<a href="javascript:void(0);" class="btn btn-warning btn-circle"><i class="fa fa-linkedin"></i></a>
+							</li>
+							<li>
+								<a href="javascript:void(0);" class="btn btn-danger btn-circle"><i class="fa fa-google"></i></a>
 							</li>
 						</ul>
 					</div>
@@ -362,7 +373,7 @@ Contractology supply a wide variety of commercial legal documents, such as <a hr
 		</div><!-- /.modal -->
 
 		<!--================================================== -->	
-		<script type="text/javascript">
+		<script type="text/javascript"  th:inline="javascript" layout:fragment="script">
 			runAllForms();
 			
 			// Model i agree button
@@ -375,16 +386,37 @@ Contractology supply a wide variety of commercial legal documents, such as <a hr
 					$('#myModal').modal('toggle');
 				}
 			});
-			
+
 			// Validation
 			$(function() {
+				$.validator.addMethod('checkUserName', function (value, element, param) {
+					var isValid = false;
+					$.ajax({
+						url: /*[[@{/auth/checkUsername}]]*/ '/auth/checkUsername',
+						data:{"username" : value},
+						method : "POST",
+						async: false,
+						success : function (data) {
+							var resultCode = data.result_code;
+							if(resultCode == "300") {
+								isValid = true;
+							}
+						}
+					});
+					return isValid; // return bool here if valid or not.
+				}, 'Duplicated username. Please enter another username.');
+
 				// Validation
 				$("#smart-form-register").validate({
-
+					onkeyup : false,
+					onfocusout: function(element, event) {
+						this.element(element);
+					},
 					// Rules for form validation
 					rules : {
 						username : {
-							required : true
+							required : true,
+							checkUserName : true
 						},
 						email : {
 							required : true,
@@ -417,8 +449,8 @@ Contractology supply a wide variety of commercial legal documents, such as <a hr
 
 					// Messages for form validation
 					messages : {
-						login : {
-							required : 'Please enter your login'
+						username : {
+							required : 'Please enter your username'
 						},
 						email : {
 							required : 'Please enter your email address',
@@ -446,13 +478,13 @@ Contractology supply a wide variety of commercial legal documents, such as <a hr
 					},
 
 					// Ajax form submition
-					submitHandler : function(form) {
-						$(form).ajaxSubmit({
-							success : function() {
-								$("#smart-form-register").addClass('submited');
-							}
-						});
-					},
+//					submitHandler : function(form) {
+//						$(form).ajaxSubmit({
+//							success : function() {
+//								$("#smart-form-register").addClass('submited');
+//							}
+//						});
+//					},
 
 					// Do not change code below
 					errorPlacement : function(error, element) {

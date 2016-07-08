@@ -22,6 +22,7 @@ public class User implements Serializable, UserDetails {
     private static final long serialVersionUID = 7335493241607963381L;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     @Column
     private long id;
 
@@ -32,10 +33,16 @@ public class User implements Serializable, UserDetails {
     private String password;
 
     @Column(nullable = false, length = DomainType.USERNAME)
-    private String fullname;
+    private String firstName;
+
+    @Column(nullable = false, length = DomainType.USERNAME)
+    private String lastName;
 
     @Column
     private String email;
+
+    @Column
+    private String gender;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -108,14 +115,6 @@ public class User implements Serializable, UserDetails {
         this.password = password;
     }
 
-    public String getFullname() {
-        return fullname;
-    }
-
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
-
     public Language getLanguage() {
         return language;
     }
@@ -167,5 +166,29 @@ public class User implements Serializable, UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }
