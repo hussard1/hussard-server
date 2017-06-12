@@ -27,7 +27,7 @@ public class UserMgmtControllerTest {
     @Test
     public void getList(){
 
-        assertNotNull(userService.getList());
+        assertNotNull(userService.getList(searchWord, pageSize, pageNum));
 //        assertEquals();
     }
 }

@@ -13,5 +13,8 @@ public interface UserRepository {
 
     void save(User user);
 
-    List getList();
+    List getList(String searchWord, int pageSize, int pageNum);
+
+    Long getUserCount(String searchWord);
+
 }
