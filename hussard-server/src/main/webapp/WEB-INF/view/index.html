@@ -6,8 +6,7 @@
 <body>
         <a href="/auth/login">로그인</a>
         <br/>
-        <span th:text="${#authentication == null? 'a': #authentication.name}">aa</span>
-        로그인 됨
+        <span th:text="${#authentication == null? '로그인 안됨': #authentication.name}"></span>
         <br/>
         <a href="/auth/logout">로그아웃</a>
         <br/>

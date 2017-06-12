@@ -30,7 +30,6 @@ public class SecuredResourceService {
 
         Map<RequestMatcher, Collection<ConfigAttribute>> resultMap = new LinkedHashMap<>();
 
-
         List<ConfigAttribute> configs = new LinkedList<>();
 
         List<SecuredResource> securedResources = securedResourceRepository.getSecuredResources();

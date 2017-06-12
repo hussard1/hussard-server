@@ -80,6 +80,10 @@ public class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
+            .authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
+//            .anonymous().disable()
             .formLogin()
                 .loginPage("/auth/login").permitAll()
                 .and()
@@ -91,9 +95,6 @@ public class WebMvcSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
             .exceptionHandling()
                 .accessDeniedPage("/auth/c/denied")
-                .and()
-            .authorizeRequests()
-                .anyRequest().authenticated()
                 .and()
             .addFilterAfter(filterSecurityInterceptor(), FilterSecurityInterceptor.class)
             .httpBasic();
