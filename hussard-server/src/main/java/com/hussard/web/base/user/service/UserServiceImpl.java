@@ -41,4 +41,9 @@ public class UserServiceImpl implements UserService {
     public Long getUserCount(String searchWord) {
         return userRepository.getUserCount(searchWord);
     }
+
+    @Override
+    public User getUser(long id) {
+        return userRepository.getUser(id);
+    }
 }

@@ -16,4 +16,6 @@ public interface UserService {
     User getUser(String username);
 
     Long getUserCount(String searchWord);
+
+    User getUser(long id);
 }

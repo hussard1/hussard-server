@@ -58,6 +58,13 @@ public class UserMgmtController {
         return "/admin/user/list";
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/view")
+    public String view(@RequestParam(value = "id") long id, Model model){
+        User user = userService.getUser(id);
+        model.addAttribute("user", user);
+        return "/admin/user/view";
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/add")
     public String add(User user, Model model){
         List<Group> groups = groupService.getGroups();
@@ -86,5 +93,16 @@ public class UserMgmtController {
 
         userService.save(user);
         return "redirect:/admin/user/list";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/update")
+    public String update(@RequestParam(value = "id") long id, Model model){
+        User user = userService.getUser(id);
+        List<Group> groups = groupService.getGroups();
+        List<Authority> authorities = authorityService.getAuthorities();
+        model.addAttribute("user", user);
+        model.addAttribute("groups", groups);
+        model.addAttribute("authorities", authorities);
+        return "/admin/user/update";
     }
 }

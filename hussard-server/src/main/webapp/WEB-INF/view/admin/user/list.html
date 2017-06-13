@@ -127,7 +127,7 @@
 													</tr>
 													</thead>
 													<tbody>
-														<tr th:each="user, iter : ${users}">
+														<tr th:each="user, iter : ${users}" th:attr="id=${user.id}">
 															<td th:text="${iter.index}+1">1</td>
 															<td th:text="${user.username}">Jennifer</td>
 															<td th:text="${user.firstName}">1-342-463-8341</td>
@@ -190,6 +190,11 @@
                     $('input[name=pageNum]').val($(this).attr("value"));
                     $(this).closest('form').submit();
                 })
+
+				$("table tr").on('click', function(){
+				    var id = $(this).attr('id');
+				    location.href = "/admin/user/view?id="+id;
+				})
 			});
             //]]>
 		</script>

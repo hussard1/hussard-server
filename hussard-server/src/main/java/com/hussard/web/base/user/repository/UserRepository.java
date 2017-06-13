@@ -17,4 +17,5 @@ public interface UserRepository {
 
     Long getUserCount(String searchWord);
 
+    User getUser(long id);
 }

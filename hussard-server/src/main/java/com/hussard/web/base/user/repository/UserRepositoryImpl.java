@@ -29,9 +29,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User getUser(String username) {
         Session session = sessionFactory.getCurrentSession();
 
-        User user = (User) session.createCriteria(User.class).add(Restrictions.eq("username", username)).uniqueResult();
-
-        return user;
+        return (User) session.createCriteria(User.class).add(Restrictions.eq("username", username)).uniqueResult();
     }
 
     @Override
@@ -68,5 +66,12 @@ public class UserRepositoryImpl implements UserRepository {
         criteria = (searchWord.equals("")) ? criteria : criteria.add(Restrictions.like("username", searchWord, MatchMode.ANYWHERE));
         return (Long)criteria.setProjection(Projections.rowCount()).uniqueResult();
 
+    }
+
+    @Override
+    @Transactional
+    public User getUser(long id) {
+        Session session = sessionFactory.getCurrentSession();
+        return (User) session.createCriteria(User.class).add(Restrictions.eq("id", id)).uniqueResult();
     }
 }
