@@ -104,7 +104,6 @@ public class InitServiceImpl implements InitService {
 
         authorityRepository.save(adminAuthority);
 
-
         userAuthority = new Authority();
         userAuthority.setName("USER_AUTHORITY");
         authorityRepository.save(userAuthority);

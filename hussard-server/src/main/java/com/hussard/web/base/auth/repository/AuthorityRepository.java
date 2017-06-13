@@ -11,7 +11,9 @@ public interface AuthorityRepository {
 
     Authority getAuthority(String name);
 
-    List getAuthorities();
+    List<Authority> getAuthorities();
 
     void save(Authority authority);
+
+    Authority getAuthority(long id);
 }

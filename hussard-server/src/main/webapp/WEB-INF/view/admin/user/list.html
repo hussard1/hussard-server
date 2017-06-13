@@ -1,105 +1,203 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" layout:decorator="layout/layout">
 <head>
-    <title tiles:fragement="title">Title</title>
+	<title>Title</title>
 </head>
-<body>
-    <div tiles:fragment="content">
-        <!-- NEW WIDGET START -->
-        <article class="col-sm-12 col-md-12 col-lg-6">
+	<!--
 
-            <!-- Widget ID (each widget will need unique ID)-->
-            <div class="jarviswidget jarviswidget-color-greenDark" id="wid-id-2" data-widget-editbutton="false">
-                <!-- widget options:
-                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+	TABLE OF CONTENTS.
+	
+	Use search to find needed section.
+	
+	===================================================================
+	
+	|  01. #CSS Links                |  all CSS links and file paths  |
+	|  02. #FAVICONS                 |  Favicon links and file paths  |
+	|  03. #GOOGLE FONT              |  Google font link              |
+	|  04. #APP SCREEN / ICONS       |  app icons, screen backdrops   |
+	|  05. #BODY                     |  body tag                      |
+	|  06. #HEADER                   |  header tag                    |
+	|  07. #PROJECTS                 |  project lists                 |
+	|  08. #TOGGLE LAYOUT BUTTONS    |  layout buttons and actions    |
+	|  09. #MOBILE                   |  mobile view dropdown          |
+	|  10. #SEARCH                   |  search field                  |
+	|  11. #NAVIGATION               |  left panel & navigation       |
+	|  12. #RIGHT PANEL              |  right panel userlist          |
+	|  13. #MAIN PANEL               |  main panel                    |
+	|  14. #MAIN CONTENT             |  content holder                |
+	|  15. #PAGE FOOTER              |  page footer                   |
+	|  16. #SHORTCUT AREA            |  dropdown shortcuts area       |
+	|  17. #PLUGINS                  |  all scripts and plugins       |
+	
+	===================================================================
+	
+	-->
+	
+	<!-- #BODY -->
+	<!-- Possible Classes
 
-                data-widget-colorbutton="false"
-                data-widget-editbutton="false"
-                data-widget-togglebutton="false"
-                data-widget-deletebutton="false"
-                data-widget-fullscreenbutton="false"
-                data-widget-custombutton="false"
-                data-widget-collapsed="true"
-                data-widget-sortable="false"
+		* 'smart-style-{SKIN#}'
+		* 'smart-rtl'         - Switch theme mode to RTL
+		* 'menu-on-top'       - Switch to top navigation (no DOM change required)
+		* 'no-menu'			  - Hides the menu completely
+		* 'hidden-menu'       - Hides the main menu but still accessable by hovering over left edge
+		* 'fixed-header'      - Fixes the header
+		* 'fixed-navigation'  - Fixes the main menu
+		* 'fixed-ribbon'      - Fixes breadcrumb
+		* 'fixed-page-footer' - Fixes footer
+		* 'container'         - boxed layout mode (non-responsive: will not work with fixed-navigation & fixed-ribbon)
+	-->
+	<body class="">
+		<!-- MAIN PANEL -->
+		<div id="main" role="main">
+			<div layout:fragment="content">
+				<!-- widget grid -->
+				<section id="widget-grid" class="">
 
-                -->
-                <header>
-                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
-                    <h2>Table hover states </h2>
+					<!-- row -->
+					<div class="row">
 
-                </header>
+						<!-- NEW WIDGET START -->
+						<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
-                <!-- widget div-->
-                <div>
+							<!-- Widget ID (each widget will need unique ID)-->
+							<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false">
+								<!-- widget options:
+								usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
 
-                    <!-- widget edit box -->
-                    <div class="jarviswidget-editbox">
-                        <!-- This area used as dropdown edit box -->
+								data-widget-colorbutton="false"
+								data-widget-editbutton="false"
+								data-widget-togglebutton="false"
+								data-widget-deletebutton="false"
+								data-widget-fullscreenbutton="false"
+								data-widget-custombutton="false"
+								data-widget-collapsed="true"
+								data-widget-sortable="false"
 
-                    </div>
-                    <!-- end widget edit box -->
+								-->
+								<header>
+									<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+									<h2>Standard Data Tables </h2>
 
-                    <!-- widget content -->
-                    <div class="widget-body no-padding">
+								</header>
 
-                        <div class="alert alert-info no-margin fade in">
-                            <button class="close" data-dismiss="alert">
-                                ×
-                            </button>
-                            <i class="fa-fw fa fa-info"></i>
-                            Enables hover effect <code>&lt;table&gt;</code> by adding the <code>.table-hover</code> with the base class
-                        </div>
-                        <div class="table-responsive">
+								<!-- widget div-->
+								<div>
 
-                            <table class="table table-hover">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Username</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>@fat</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>@twitter</td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>Wise</td>
-                                    <td>Man</td>
-                                    <td>@myorange</td>
-                                </tr>
-                                </tbody>
-                            </table>
+									<!-- widget edit box -->
+									<div class="jarviswidget-editbox">
+										<!-- This area used as dropdown edit box -->
 
-                        </div>
-                    </div>
-                    <!-- end widget content -->
+									</div>
+									<!-- end widget edit box -->
 
-                </div>
-                <!-- end widget div -->
+									<!-- widget content -->
+									<div class="widget-body">
+										<form id="searchForm" th:action="@{/admin/user/list}">
+											<input type="hidden" name="pageNum"/>
+											<div class="widget-body-toolbar">
+													<div class="row">
+														<div class="col-xs-9 col-sm-3 col-md-3 col-lg-3">
+															<div class="input-group">
+																<span class="input-group-addon"><i class="fa fa-search"></i></span>
+																<input th:value="${searchWord}" name="searchWord" class="form-control" id="searchWord" placeholder="Filter" type="text"/>
+															</div>
+														</div>
+														<div class="col-xs-3 col-sm-2 col-md-1 col-lg-1 pull-right">
+															<select name="pageSize" aria-controls="dt_basic" class="form-control" onchange="this.form.submit()">
+																<option th:selected="${pageNation.pageSize}==10" value="10">10</option>
+																<option th:selected="${pageNation.pageSize}==25" value="25">25</option>
+																<option th:selected="${pageNation.pageSize}==50" value="50">50</option>
+																<option th:selected="${pageNation.pageSize}==100" value="100">100</option>
+															</select>
+														</div>
+													</div>
+											</div>
+											<div class="table-responsive">
+												<table class="table table-bordered">
+													<thead>
+													<tr>
+														<th>NO</th>
+														<th><i class="fa fa-fw fa-user text-muted hidden-md hidden-sm hidden-xs"></i> ID</th>
+														<th>FIRST NAME</th>
+														<th>LAST NAME</th>
+														<th>EMAIL</th>
+														<th><i class="fa fa-fw fa-phone text-muted hidden-md hidden-sm hidden-xs"></i> PHONE</th>
+														<th><i class="fa fa-fw fa-calendar txt-color-blue hidden-md hidden-sm hidden-xs"></i> CREATED DATE</th>
+													</tr>
+													</thead>
+													<tbody>
+														<tr th:each="user, iter : ${users}" th:attr="id=${user.id}">
+															<td th:text="${iter.index}+1">1</td>
+															<td th:text="${user.username}">Jennifer</td>
+															<td th:text="${user.firstName}">1-342-463-8341</td>
+															<td th:text="${user.lastName}">1-342-463-8341</td>
+															<td th:text="${user.email}">1-342-463-8341</td>
+															<td>1-342-463-8341</td>
+															<td th:text="${user.created}">Et Rutrum Non Associates</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+											<div class="widget-footer text-left" style="background-color: transparent" th:object="${pageNation}">
+												<div class="col-sm-4 col-xs-12 hidden-xs">
+													<div class="dataTables_info" role="status" aria-live="polite">Total
+														<span th:text="*{totalContentCnt}" class="text-primary">100</span> entries
+													</div>
+												</div>
+												<div class="col-xs-12 col-sm-4">
+													<div class="dataTables_paginate paging_simple_numbers"
+														 id="dt_basic_paginate" style="float: none; text-align: center">
+														<ul class="pagination pagination-sm">
+															<li th:classappend="*{block} le 1 ? 'disabled' : ''" class="paginate_button previous" aria-controls="dt_basic"
+																th:attr="value=*{block le 1 ? '' : startPage-1}" id="dt_basic_previous"><a href="javascript:void(0)">Previous</a></li>
+															<li th:each="i : *{#numbers.sequence(startPage,endPage)} " th:classappend="*{pageNum} eq ${i} ? 'active' : ''" class="paginate_button" aria-controls="dt_basic"
+																th:attr="value=${i}"><a th:text="${i}" href="javascript:void(0)"></a></li>
+															<li th:classappend="*{block ge totalBlock} ? 'disabled' : ''" class="paginate_button next" aria-controls="dt_basic"
+																th:attr="value=*{block ge totalBlock ? '' : endPage+1}" id="dt_basic_next"><a href="javascript:void(0)">Next</a></li>
+														</ul>
+													</div>
+												</div>
+												<div class="col-xs-12 col-sm-4 text-right">
+													<a th:href="@{/admin/user/add}" class="btn btn-primary" >
+														add
+													</a>
+												</div>
+											</div>
+										</form>
+									</div>
+							<!-- end widget content -->
+								</div>
+								<!-- end widget div -->
+							</div>
+							<!-- end widget -->
+						</article>
+					</div>
+				</section>
+			</div>
+		</div>
+		<!-- END MAIN PANEL -->
 
-            </div>
-            <!-- end widget -->
+		<div layout:fragment="scriptFile">
+		<!-- PAGE RELATED PLUGIN(S) -->
 
-        </article>
-        <!-- WIDGET END -->
-    </div>
-</body>
+		</div>
+
+		<script type="text/javascript" th:inline="javascript" layout:fragment="script">
+			//<![CDATA[
+            $(document).ready(function() {
+                $(".pagination li").on('click', function (e) {
+                    $('input[name=pageNum]').val($(this).attr("value"));
+                    $(this).closest('form').submit();
+                })
+
+				$("table tr").on('click', function(){
+				    var id = $(this).attr('id');
+				    location.href = "/admin/user/view?id="+id;
+				})
+			});
+            //]]>
+		</script>
+	</body>
+
 </html>

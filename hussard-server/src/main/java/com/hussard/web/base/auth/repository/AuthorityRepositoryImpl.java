@@ -24,9 +24,7 @@ public class AuthorityRepositoryImpl implements AuthorityRepository {
     public Authority getAuthority(String name) {
         Session session = sessionFactory.getCurrentSession();
 
-        Authority authority = (Authority) session.createCriteria(Authority.class).add(Restrictions.eq("name", name)).uniqueResult();
-
-        return authority;
+        return (Authority) session.createCriteria(Authority.class).add(Restrictions.eq("name", name)).uniqueResult();
     }
 
     @Override
@@ -41,5 +39,12 @@ public class AuthorityRepositoryImpl implements AuthorityRepository {
     public void save(Authority authority) {
         Session session = sessionFactory.getCurrentSession();
         session.save(authority);
+    }
+
+    @Override
+    @Transactional
+    public Authority getAuthority(long id) {
+        Session session = sessionFactory.getCurrentSession();
+        return (Authority) session.createCriteria(Authority.class).add(Restrictions.eq("id", id)).uniqueResult();
     }
 }

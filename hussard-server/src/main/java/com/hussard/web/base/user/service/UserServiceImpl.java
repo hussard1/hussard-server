@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.enterprise.event.Observes;
 import java.util.List;
 
 /**
@@ -23,8 +22,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<User> getList(){
-        return userRepository.getList();
+    public List<User> getList(String searchWord, int pageSize, int pageNum){
+        return userRepository.getList(searchWord, pageSize, pageNum);
     }
 
     @Override
@@ -36,5 +35,25 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(String username) {
         return userRepository.getUser(username);
+    }
+
+    @Override
+    public Long getUserCount(String searchWord) {
+        return userRepository.getUserCount(searchWord);
+    }
+
+    @Override
+    public User getUser(long id) {
+        return userRepository.getUser(id);
+    }
+
+    @Override
+    public void update(User user) {
+        userRepository.update(user);
+    }
+
+    @Override
+    public void delete(long id) {
+        userRepository.delete(id);
     }
 }

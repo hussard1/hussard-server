@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorator="layout/layout">
+<head>
+	<title>Title</title>
+</head>
+	<!--
+
+	TABLE OF CONTENTS.
+	
+	Use search to find needed section.
+	
+	===================================================================
+	
+	|  01. #CSS Links                |  all CSS links and file paths  |
+	|  02. #FAVICONS                 |  Favicon links and file paths  |
+	|  03. #GOOGLE FONT              |  Google font link              |
+	|  04. #APP SCREEN / ICONS       |  app icons, screen backdrops   |
+	|  05. #BODY                     |  body tag                      |
+	|  06. #HEADER                   |  header tag                    |
+	|  07. #PROJECTS                 |  project lists                 |
+	|  08. #TOGGLE LAYOUT BUTTONS    |  layout buttons and actions    |
+	|  09. #MOBILE                   |  mobile view dropdown          |
+	|  10. #SEARCH                   |  search field                  |
+	|  11. #NAVIGATION               |  left panel & navigation       |
+	|  12. #RIGHT PANEL              |  right panel userlist          |
+	|  13. #MAIN PANEL               |  main panel                    |
+	|  14. #MAIN CONTENT             |  content holder                |
+	|  15. #PAGE FOOTER              |  page footer                   |
+	|  16. #SHORTCUT AREA            |  dropdown shortcuts area       |
+	|  17. #PLUGINS                  |  all scripts and plugins       |
+	
+	===================================================================
+	
+	-->
+	
+	<!-- #BODY -->
+	<!-- Possible Classes
+
+		* 'smart-style-{SKIN#}'
+		* 'smart-rtl'         - Switch theme mode to RTL
+		* 'menu-on-top'       - Switch to top navigation (no DOM change required)
+		* 'no-menu'			  - Hides the menu completely
+		* 'hidden-menu'       - Hides the main menu but still accessable by hovering over left edge
+		* 'fixed-header'      - Fixes the header
+		* 'fixed-navigation'  - Fixes the main menu
+		* 'fixed-ribbon'      - Fixes breadcrumb
+		* 'fixed-page-footer' - Fixes footer
+		* 'container'         - boxed layout mode (non-responsive: will not work with fixed-navigation & fixed-ribbon)
+	-->
+	<body class="">
+		<!-- MAIN PANEL -->
+		<div id="main" role="main">
+			<div layout:fragment="content">
+				<!-- widget grid -->
+				<section id="widget-grid" class="">
+
+					<!-- row -->
+					<div class="row">
+
+						<!-- NEW WIDGET START -->
+						<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+							<!-- Widget ID (each widget will need unique ID)-->
+							<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false">
+								<!-- widget options:
+								usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+								data-widget-colorbutton="false"
+								data-widget-editbutton="false"
+								data-widget-togglebutton="false"
+								data-widget-deletebutton="false"
+								data-widget-fullscreenbutton="false"
+								data-widget-custombutton="false"
+								data-widget-collapsed="true"
+								data-widget-sortable="false"
+
+								-->
+								<header>
+									<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+									<h2>Registration form </h2>
+
+								</header>
+
+								<!-- widget div-->
+								<div>
+
+									<!-- widget edit box -->
+									<div class="jarviswidget-editbox">
+										<!-- This area used as dropdown edit box -->
+
+									</div>
+									<!-- end widget edit box -->
+
+									<!-- widget content -->
+									<div class="widget-body">
+
+										<div class="widget-body no-padding">
+											<form id="smart-form-register" class="smart-form" novalidate="novalidate" th:object="${user}" th:action="@{/admin/user/update}" method="post">
+												<input type="hidden" name="id" th:value="*{id}"/>
+												<header>
+													Registration form
+												</header>
+
+												<fieldset>
+													<section>
+														<label class="label">ID</label>
+														<label class="input"> <i class="icon-append fa fa-user"></i>
+															<input type="text" name="username" placeholder="ID" th:field="*{username}"/>
+															<b class="tooltip tooltip-bottom-right">Needed to enter the website</b> </label>
+													</section>
+													<section>
+														<label class="input"> <i class="icon-append fa fa-envelope-o"></i>
+															<input type="email" name="email" placeholder="Email address" th:field="*{email}"/>
+															<b class="tooltip tooltip-bottom-right">Needed to verify your account</b> </label>
+													</section>
+
+													<section>
+														<label class="input"> <i class="icon-append fa fa-lock"></i>
+															<input type="password" name="password" placeholder="Password" id="password" th:field="*{password}"/>
+															<b class="tooltip tooltip-bottom-right">Don't forget your password</b> </label>
+													</section>
+												</fieldset>
+
+												<fieldset>
+													<div class="row">
+														<section class="col col-6">
+															<label class="input">
+																<input type="text" name="firstname" placeholder="First name" th:field="*{firstName}"/>
+															</label>
+														</section>
+														<section class="col col-6">
+															<label class="input">
+																<input type="text" name="lastname" placeholder="Last name" th:field="*{lastName}"/>
+															</label>
+														</section>
+													</div>
+													<div class="row">
+														<section class="col col-6">
+															<label class="select">
+																<select name="gender" th:field="*{gender}">
+																	<option value="0" selected="" disabled="">Gender</option>
+																	<option value="1">Male</option>
+																	<option value="2">Female</option>
+																</select> <i></i> </label>
+														</section>
+														<section class="col col-6">
+															<label class="input">
+																<input type="text" name="request" placeholder="phone number"/>
+															</label>
+														</section>
+													</div>
+												</fieldset>
+												<fieldset>
+													<div class="form-group">
+														<label class="label">Group</label>
+														<select name="group" multiple="" style="width:100%; padding-bottom: 10px;"
+																class="select2 select2-offscreen" tabindex="-1">
+															<option  th:each="group : ${groups}" th:value="${group.id}" th:text="${group.name}" value=""
+																 th:selected="${#lists.contains(userGroupIds, group.id)}">
+															</option>
+														</select>
+														<label class="label">Authority</label>
+														<select name="authority" multiple="" style="width:100%; padding-bottom: 10px;"
+																	class="select2 select2-offscreen" tabindex="-1">
+															<option th:each="authority : ${authorities}" th:value="${authority.id}" th:text="${authority.name}" value=""
+																th:selected="${#lists.contains(userAuthorityIds, authority.id)}">>
+															</option>
+														</select>
+													</div>
+												</fieldset>
+												<footer>
+													<button type="submit" class="btn btn-success">
+														save
+													</button>
+													<button type="button" class="btn btn-default" onclick="window.history.back();">
+														Back
+													</button>
+												</footer>
+											</form>
+
+										</div>
+									</div>
+							<!-- end widget content -->
+								</div>
+								<!-- end widget div -->
+							</div>
+							<!-- end widget -->
+						</article>
+					</div>
+				</section>
+			</div>
+		</div>
+		<!-- END MAIN PANEL -->
+
+		<div layout:fragment="scriptFile">
+		<!-- PAGE RELATED PLUGIN(S) -->
+		</div>
+
+		<script type="text/javascript" th:inline="javascript" layout:fragment="script">
+			//<![CDATA[
+            $(document).ready(function() {
+			});
+            //]]>
+		</script>
+	</body>
+
+</html>

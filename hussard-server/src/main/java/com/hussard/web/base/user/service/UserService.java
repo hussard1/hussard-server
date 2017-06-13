@@ -9,9 +9,17 @@ import java.util.List;
  */
 public interface UserService {
 
-    List<User> getList();
+    List<User> getList(String searchWord, int pageSize, int pageNum);
 
     void save(User user);
 
     User getUser(String username);
+
+    Long getUserCount(String searchWord);
+
+    User getUser(long id);
+
+    void update(User user);
+
+    void delete(long id);
 }

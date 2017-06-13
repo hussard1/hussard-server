@@ -13,5 +13,13 @@ public interface UserRepository {
 
     void save(User user);
 
-    List getList();
+    List getList(String searchWord, int pageSize, int pageNum);
+
+    Long getUserCount(String searchWord);
+
+    User getUser(long id);
+
+    void update(User user);
+
+    void delete(long id);
 }
