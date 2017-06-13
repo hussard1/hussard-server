@@ -74,4 +74,11 @@ public class UserRepositoryImpl implements UserRepository {
         Session session = sessionFactory.getCurrentSession();
         return (User) session.createCriteria(User.class).add(Restrictions.eq("id", id)).uniqueResult();
     }
+
+    @Override
+    @Transactional
+    public void update(User user) {
+        Session session = sessionFactory.getCurrentSession();
+        session.update(user);
+    }
 }

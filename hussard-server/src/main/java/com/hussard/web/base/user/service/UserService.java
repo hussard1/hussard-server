@@ -18,4 +18,6 @@ public interface UserService {
     Long getUserCount(String searchWord);
 
     User getUser(long id);
+
+    void update(User user);
 }

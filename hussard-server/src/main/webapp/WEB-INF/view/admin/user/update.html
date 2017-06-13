@@ -95,7 +95,7 @@
 									<div class="widget-body">
 
 										<div class="widget-body no-padding">
-											<form id="smart-form-register" class="smart-form" novalidate="novalidate" th:object="${user}">
+											<form id="smart-form-register" class="smart-form" novalidate="novalidate" th:object="${user}" th:action="@{/admin/user/update}" method="post">
 												<input type="hidden" name="id" th:value="*{id}"/>
 												<header>
 													Registration form
@@ -155,22 +155,22 @@
 														<label class="label">Group</label>
 														<select name="group" multiple="" style="width:100%; padding-bottom: 10px;"
 																class="select2 select2-offscreen" tabindex="-1">
-															<option  th:each="group : *{groups}" th:value="${group.id}" th:text="${group.name}" value="" th:selected="selected">Alaska</option>
+															<option  th:each="group : ${groups}" th:value="${group.id}" th:text="${group.name}" value=""
+																 th:selected="${#lists.contains(userGroupIds, group.id)}">
+															</option>
 														</select>
 														<label class="label">Authority</label>
 														<select name="authority" multiple="" style="width:100%; padding-bottom: 10px;"
 																	class="select2 select2-offscreen" tabindex="-1">
-															<option th:each="authority : *{authorities}" th:value="${authority.id}" th:text="${authority.name}" value=""
-																	th:selected="selected">Alaska</option>
+															<option th:each="authority : ${authorities}" th:value="${authority.id}" th:text="${authority.name}" value=""
+																th:selected="${#lists.contains(userAuthorityIds, authority.id)}">>
+															</option>
 														</select>
 													</div>
 												</fieldset>
 												<footer>
-													<button type="button" class="btn btn-danger" style="float: none">
-														delete
-													</button>
-													<button id="updateBtn" type="button" class="btn btn-success">
-														update
+													<button type="submit" class="btn btn-success">
+														save
 													</button>
 													<button type="button" class="btn btn-default" onclick="window.history.back();">
 														Back
@@ -199,14 +199,6 @@
 		<script type="text/javascript" th:inline="javascript" layout:fragment="script">
 			//<![CDATA[
             $(document).ready(function() {
-                $("input").attr("disabled", true);
-                $("select").attr("disabled", true);
-
-                $("#updateBtn").on('click', function(e){
-					e.preventDefault();
-					var id = $("input[name=id]").val();
-					location.href = "/admin/user/update?id=" + id;
-				});
 			});
             //]]>
 		</script>

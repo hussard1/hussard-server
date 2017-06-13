@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -100,9 +101,43 @@ public class UserMgmtController {
         User user = userService.getUser(id);
         List<Group> groups = groupService.getGroups();
         List<Authority> authorities = authorityService.getAuthorities();
+
+        List<Long> userGroupIds = new ArrayList<>();
+        for(Object o : user.getGroups().toArray()){
+            userGroupIds.add(((Group)o).getId());
+        }
+
+        List<Long> userAuthorityIds = new ArrayList<>();
+        for(Object o : user.getAuthorities().toArray()){
+            userAuthorityIds.add(((Authority)o).getId());
+        }
+
         model.addAttribute("user", user);
         model.addAttribute("groups", groups);
+        model.addAttribute("userGroupIds", userGroupIds);
+        model.addAttribute("userAuthorityIds", userAuthorityIds);
         model.addAttribute("authorities", authorities);
         return "/admin/user/update";
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/update")
+    public String modify(@RequestParam(value = "group") long[] groupIds,
+                         @RequestParam(value = "authority") long[] authorityIds,
+                         User user, Model model){
+        Set<Group> groups = new HashSet<>();
+        for(long groupId : groupIds){
+            groups.add(groupService.getGroup(groupId));
+        }
+        user.setGroups(groups);
+
+        Set<Authority> authorities = new HashSet<>();
+        for(long authorityId : authorityIds){
+            authorities.add(authorityService.getAuthority(authorityId));
+        }
+        user.setAuthorities(authorities);
+
+        userService.update(user);
+
+        return "redirect:/admin/user/view?id="+user.getId();
     }
 }
