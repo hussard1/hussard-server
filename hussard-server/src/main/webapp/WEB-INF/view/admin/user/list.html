@@ -140,15 +140,15 @@
 												</table>
 											</div>
 											<div class="widget-footer text-left" style="background-color: transparent" th:object="${pageNation}">
-												<div class="col-sm-6 col-xs-12 hidden-xs">
+												<div class="col-sm-4 col-xs-12 hidden-xs">
 													<div class="dataTables_info" role="status" aria-live="polite">Total
 														<span th:text="*{totalContentCnt}" class="text-primary">100</span> entries
 													</div>
 												</div>
-												<div class="col-xs-12 col-sm-6">
+												<div class="col-xs-12 col-sm-4">
 													<div class="dataTables_paginate paging_simple_numbers"
-														 id="dt_basic_paginate">
-														<ul  class="pagination pagination-sm">
+														 id="dt_basic_paginate" style="float: none; text-align: center">
+														<ul class="pagination pagination-sm">
 															<li th:classappend="*{block} le 1 ? 'disabled' : ''" class="paginate_button previous" aria-controls="dt_basic"
 																th:attr="value=*{block le 1 ? '' : startPage-1}" id="dt_basic_previous"><a href="javascript:void(0)">Previous</a></li>
 															<li th:each="i : *{#numbers.sequence(startPage,endPage)} " th:classappend="*{pageNum} eq ${i} ? 'active' : ''" class="paginate_button" aria-controls="dt_basic"
@@ -157,6 +157,11 @@
 																th:attr="value=*{block ge totalBlock ? '' : endPage+1}" id="dt_basic_next"><a href="javascript:void(0)">Next</a></li>
 														</ul>
 													</div>
+												</div>
+												<div class="col-xs-12 col-sm-4 text-right">
+													<a th:href="@{/admin/user/add}" class="btn btn-primary" >
+														add
+													</a>
 												</div>
 											</div>
 										</form>
