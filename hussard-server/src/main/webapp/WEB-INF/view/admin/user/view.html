@@ -95,7 +95,7 @@
 									<div class="widget-body">
 
 										<div class="widget-body no-padding">
-											<form id="smart-form-register" class="smart-form" novalidate="novalidate" th:object="${user}">
+											<form id="smart-form-register" class="smart-form" novalidate="novalidate" th:object="${user}" method="get">
 												<input type="hidden" name="id" th:value="*{id}"/>
 												<header>
 													Registration form
@@ -166,7 +166,7 @@
 													</div>
 												</fieldset>
 												<footer>
-													<button type="button" class="btn btn-danger" style="float: none">
+													<button id="deleteBtn" type="button" class="btn btn-danger" style="float: none">
 														delete
 													</button>
 													<button id="updateBtn" type="button" class="btn btn-success">
@@ -200,6 +200,7 @@
 			//<![CDATA[
             $(document).ready(function() {
                 $("input").attr("disabled", true);
+                $("input[name=id]").attr("disabled", false);
                 $("select").attr("disabled", true);
 
                 $("#updateBtn").on('click', function(e){
@@ -207,6 +208,13 @@
 					var id = $("input[name=id]").val();
 					location.href = "/admin/user/update?id=" + id;
 				});
+
+                $("#deleteBtn").on('click', function(e){
+                    e.preventDefault();
+                    var form = $(this).closest('form');
+                    form.attr("action", "/admin/user/delete");
+                    form.submit();
+                });
 			});
             //]]>
 		</script>

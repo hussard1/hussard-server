@@ -140,4 +140,10 @@ public class UserMgmtController {
 
         return "redirect:/admin/user/view?id="+user.getId();
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/delete")
+    public String delete(@RequestParam(value = "id") long id, Model model){
+        userService.delete(id);
+        return "redirect:/admin/user/list";
+    }
 }

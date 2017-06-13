@@ -20,4 +20,6 @@ public interface UserRepository {
     User getUser(long id);
 
     void update(User user);
+
+    void delete(long id);
 }

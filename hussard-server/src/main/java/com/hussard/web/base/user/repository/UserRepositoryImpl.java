@@ -81,4 +81,12 @@ public class UserRepositoryImpl implements UserRepository {
         Session session = sessionFactory.getCurrentSession();
         session.update(user);
     }
+
+    @Override
+    @Transactional
+    public void delete(long id) {
+        Session session = sessionFactory.getCurrentSession();
+        User user = (User) session.createCriteria(User.class).add(Restrictions.eq("id", id)).uniqueResult();
+        session.delete(user);
+    }
 }
