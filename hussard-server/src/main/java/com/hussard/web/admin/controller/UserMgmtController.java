@@ -1,5 +1,9 @@
 package com.hussard.web.admin.controller;
 
+import com.hussard.web.base.auth.domain.Authority;
+import com.hussard.web.base.auth.domain.Group;
+import com.hussard.web.base.auth.service.AuthorityService;
+import com.hussard.web.base.auth.service.GroupService;
 import com.hussard.web.base.user.domain.User;
 import com.hussard.web.base.user.service.UserService;
 import com.hussard.web.base.util.PageNation;
@@ -8,9 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by hussard on 2016. 6. 28..
@@ -21,6 +28,12 @@ public class UserMgmtController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private GroupService groupService;
+
+    @Autowired
+    private AuthorityService authorityService;
 
 
     @RequestMapping("/index")
@@ -43,5 +56,35 @@ public class UserMgmtController {
         model.addAttribute("pageNation", pageNation);
         model.addAttribute("searchWord", searchWord);
         return "/admin/user/list";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/add")
+    public String add(User user, Model model){
+        List<Group> groups = groupService.getGroups();
+        List<Authority> authorities = authorityService.getAuthorities();
+        model.addAttribute("groups", groups);
+        model.addAttribute("authorities", authorities);
+        model.addAttribute("user", new User());
+        return "/admin/user/form";
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/add")
+    public String register(@RequestParam(value = "group") long[] groupIds,
+                           @RequestParam(value = "authority") long[] authorityIds,
+                           User user, Model model){
+        Set<Group> groups = new HashSet<>();
+        for(long groupId : groupIds){
+            groups.add(groupService.getGroup(groupId));
+        }
+        user.setGroups(groups);
+
+        Set<Authority> authorities = new HashSet<>();
+        for(long authorityId : authorityIds){
+            authorities.add(authorityService.getAuthority(authorityId));
+        }
+        user.setAuthorities(authorities);
+
+        userService.save(user);
+        return "redirect:/admin/user/list";
     }
 }
